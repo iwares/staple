@@ -35,7 +35,7 @@ var bust = sessionStorage && sessionStorage['$bust'];
 
 if (!bust) {
 	bust = location.search.match(/[\?\&]_bust=([^\&]+)/i);
-	bust = (bust && bust.length > 1) ? decodeURIComponent(bust[1]) : meta['version'];
+	bust = (bust && bust.length > 1) ? decodeURIComponent(bust[1]) : meta['version-code'];
 	if (bust == 'timestamp')
 		bust = (new Date()).getTime();
 	try {
@@ -46,7 +46,7 @@ if (!bust) {
 }
 
 // Config bust.
-requirejs.config({ urlArgs: '_bust=' + (bust || ''), waitSeconds: 15 });
+requirejs.config({ urlArgs: bust ? '_bust=' + bust : undefined, waitSeconds: 15 });
 
 // Load noumenon of the framework.
 require(['noumenon'], function (noumenon) { });
