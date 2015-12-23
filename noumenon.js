@@ -114,11 +114,12 @@ if (search) {
 // Compute root path.
 var mainScript = window.document.head.querySelector('script[data-main]');
 var scriptPath = mainScript.dataset.main;
+var base = mainScript.dataset.base;
 var home = mainScript.dataset.home;
 var stapleRoot = scriptPath.substr(0, scriptPath.lastIndexOf('/') + 1);
 
 requirejs.config({
-	baseUrl : '',
+	baseUrl : base || '',
 	paths : {
 		'staple' : stapleRoot + 'modules'
 	}
@@ -126,7 +127,7 @@ requirejs.config({
 
 // Clean up unused local variables.
 delete stapleRoot;
-delete length;
+delete base;
 delete scriptPath;
 delete mainScript;
 delete search;
