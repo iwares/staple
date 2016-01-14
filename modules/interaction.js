@@ -34,6 +34,22 @@ var DialogManager = Class.create({
 	initialize : function () {
 		this.panel = HTMLParser.parse('<article id="dialogs"></article>')[0];
 		this.updater = new PeriodicalTask(100, false, this);
+
+		this.dialogs = [];
+		Object.extend(this.dialogs, {
+			remove : function(context) {
+				var temp = this.concat();
+				this.clear();
+				temp.each(function(val) {
+					if (val !== context)
+						this.push(val);
+				}, this);
+				return this;
+			},
+			top : function() {
+				return this[this.length - 1];
+			},
+		});
 	},
 
 	resume : function () {
@@ -55,13 +71,23 @@ var DialogManager = Class.create({
 	},
 
 	attach : function (dialog) {
+		this.dialogs.push(dialog);
 		this.panel.appendChild(dialog.$.frame);
 		this.updater.start(true);
 	},
 
 	detach : function (dialog) {
 		this.panel.removeChild(dialog.$.frame);
+		this.dialogs.remove(dialog);
 		this.updater.start(true);
+	},
+
+	handleBackPressed : function () {
+		var dialog = this.dialogs.top();
+		if (!dialog)
+			return false;
+		dialog.handleBackPressed();
+		return true;
 	},
 
 });
@@ -147,6 +173,8 @@ return Class.create(SuperClass, {
 	},
 
 	handleBackPressed : function () {
+		if (this.$.dialogManager.handleBackPressed())
+			return;
 		this.onBackPressed();
 	},
 

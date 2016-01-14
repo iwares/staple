@@ -161,6 +161,16 @@ return Class.create(SuperClass, {
 		return root.querySelector(selector);
 	},
 
+	handleBackPressed : function () {
+		this.onBackPressed();
+	},
+
+	onBackPressed : function () {
+		if (!this.cancelable)
+			return;
+		this.cancel();
+	},
+
 });
 
 });
