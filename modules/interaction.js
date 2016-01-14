@@ -77,6 +77,14 @@ return Class.create(SuperClass, {
 		attrs.creating = true;
 		this.invokeMethodAndEnsureSuperCalled('onCreate', state);
 		delete attrs.creating;
+
+		// Delegate click event.
+		this.$.root.onclick = (function (event) {
+			var handler = this[event.target.dataset.click];
+			if (!Object.isFunction(handler))
+				return;
+			handler.call(this, event.target);
+		}).bind(this);
 	},
 
 	onCreate : function (state) {
