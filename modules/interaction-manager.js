@@ -41,7 +41,16 @@ var Clazz = Class.create(SuperClass, {
 		if (created)
 			throw new Error('Instance of InteractionManager already exist.');
 		created = true;
+	},
 
+	handleBackPressed : function () {
+		var active = this.$.active;
+		if (!active)
+			return;
+		active.handleBackPressed();
+	},
+
+	create : function () {
 		var body = window.document.body;
 
 		// Initialize loading indicator.
@@ -99,42 +108,66 @@ var Clazz = Class.create(SuperClass, {
 		attrs.active = attrs.previous = null;
 		attrs.instances = {};
 		attrs.maxInstanceCount = 8;
-	},
-
-	handleBackPressed : function () {
-		var active = this.$.active;
-		if (!active)
-			return;
-		active.handleBackPressed();
+		attrs.paused = true;
 	},
 
 	pause : function () {
 		var attrs = this.$, interaction = attrs.active,
 			contexts = attrs.contexts;
 
-		if (contexts.length === 0)
-			return undefined;
+		if (attrs.paused)
+			return;
+		attrs.paused = true;
 
-		if (interaction) {
-			var context = interaction.$.context;
-			interaction.pause();
-			var state = {};
-			interaction.performSaveInstanceState(state);
-			context.state = state;
-		}
+		if (contexts.length === 0 || !interaction)
+			return;
 
-		var state = {
-			contexts : contexts
-		};
-
-		return state;
+		// Pause active interaction.
+		var context = interaction.$.context;
+		interaction.pause();
+		var state = {};
+		interaction.performSaveInstanceState(state);
+		context.state = state;
 	},
 
-	resume : function (state) {
-		var attrs = this.$, contexts = attrs.contexts;
+	saveState : function () {
+		if (this.$.contexts.length === 0)
+			return undefined;
+		return { contexts : this.$.contexts }
+	},
 
+	restoreState : function (state) {
+		var attrs = this.$, contexts = attrs.contexts;
+		contexts.clear();
 		Array.prototype.push.apply(contexts, state.contexts);
+	},
+
+	resume : function () {
+		var attrs = this.$, interaction = attrs.active,
+			contexts = attrs.contexts;
+
+		if (!attrs.paused)
+			return;
+		attrs.paused = false;
+
+		if (interaction) {
+			interaction.resume();
+			return;
+		}
+
 		this.instantiateActivedInteraction();
+	},
+
+	destroy : function () {
+		var attrs = this.$, contexts = attrs.contexts;
+		for (var i = contexts.length - 1, context; context = contexts[i]; --i) {
+			var interaction = instances[context.uuid];
+			if (!interaction)
+				continue;
+			interaction.destroy();
+			delete instances[context.uuid];
+		}
+		contexts.clear();
 	},
 
 	startInteraction : function (parent, request, target, extra) {
@@ -260,6 +293,9 @@ var Clazz = Class.create(SuperClass, {
 		var attrs = this.$, contexts = attrs.contexts,
 			instances = attrs.instances;
 		var context = contexts.top();
+
+		if (!context || this.$.paused)
+			return;
 
 		// lookup instance from the instance map.
 		var interaction = instances[context.uuid];

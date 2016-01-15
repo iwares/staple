@@ -73,14 +73,31 @@ return Class.create(SuperClass, {
 	},
 
 	onCreate : function () {
+		var im = InteractionManager.sharedInstance();
+		im.create();
 		this.notifySuperCalled('onCreate');
 	},
 
+	resume : function () {
+		this.invokeMethodAndEnsureSuperCalled('onResume');
+	},
+
 	onResume : function () {
+		var im = InteractionManager.sharedInstance();
+		im.resume();
 		this.notifySuperCalled('onResume');
 	},
 
+	pause : function () {
+		this.invokeMethodAndEnsureSuperCalled('onPause');
+	},
+
 	onPause : function () {
+		var im = InteractionManager.sharedInstance();
+		im.pause();
+		var state = {};
+		state.interactionManager = im.saveState();
+		this.saveApplicationState(state);
 		this.notifySuperCalled('onPause');
 	},
 
@@ -98,6 +115,8 @@ return Class.create(SuperClass, {
 	},
 
 	onDestroy : function () {
+		var im = InteractionManager.sharedInstance();
+		im.destroy();
 		this.notifySuperCalled('onDestroy');
 	},
 
@@ -167,12 +186,14 @@ return Class.create(SuperClass, {
 		if (interaction) {
 			im.startInteraction(undefined, undefined, interaction, extra);
 		} else if (state && state.interactionManager) {
-			im.resume(state.interactionManager)
+			im.restoreState(state.interactionManager)
 		} else if (home) {
 			im.startInteraction(undefined, undefined, home, extra);
 		} else {
 			throw new Error('Home not specified.');
 		}
+
+		this.invokeMethodAndEnsureSuperCalled('onResume');
 
 		window.addEventListener('popstate', this.handlePopState.bind(this));
 		window.addEventListener('unload', this.handleUnload.bind(this));
@@ -198,13 +219,7 @@ return Class.create(SuperClass, {
 	},
 
 	handleUnload : function () {
-		var im = InteractionManager.sharedInstance();
-
-		var state = {};
-		state.interactionManager = im.pause();
-
-		this.saveApplicationState(state);
-
+		this.invokeMethodAndEnsureSuperCalled('onPause');
 		this.invokeMethodAndEnsureSuperCalled('onDestroy');
 	},
 
