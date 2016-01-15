@@ -50,8 +50,9 @@ html body>article:first-child.active {
 	opacity: 1;
 }
 
-html body>article>section {
+html body>article#desktop>section {
 	box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.6);
+	background-color: white;
 }
 
 html body>article#dialogs {
