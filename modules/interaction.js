@@ -29,27 +29,12 @@ var InteractionManager = require('staple/interaction-manager');
 var HTMLParser = require('staple/html-parser');
 var PeriodicalTask = require('staple/periodical-task');
 
-var DialogManager = Class.create({
+var OverlayManager = Class.create({
 
 	initialize : function () {
-		this.panel = HTMLParser.parse('<article id="dialogs"></article>')[0];
-		this.updater = new PeriodicalTask(100, false, this);
-
-		this.dialogs = [];
-		Object.extend(this.dialogs, {
-			remove : function(context) {
-				var temp = this.concat();
-				this.clear();
-				temp.each(function(val) {
-					if (val !== context)
-						this.push(val);
-				}, this);
-				return this;
-			},
-			top : function() {
-				return this[this.length - 1];
-			},
-		});
+		this.panel = window.document.createElement('article');
+		this.panel.id = 'overlay';
+		this.updater = new PeriodicalTask(0, false, this);
 	},
 
 	resume : function () {
@@ -64,29 +49,34 @@ var DialogManager = Class.create({
 
 	run : function () {
 		var panel = this.panel;
+
+		var dialogs = panel.querySelectorAll("div#dialog");
+		for (var i = 0, dialog; dialog = dialogs[i]; ++i)
+			dialog.classList.remove('active');
+		if (dialogs.length)
+			dialogs[dialogs.length - 1].classList.add('active');
+
 		if (panel.childElementCount === 0)
 			panel.classList.remove('active');
 		else
 			panel.classList.add('active');
 	},
 
-	attach : function (dialog) {
-		this.dialogs.push(dialog);
-		this.panel.appendChild(dialog.$.frame);
+	attach : function (overlay) {
+		this.panel.appendChild(overlay.$.frame);
 		this.updater.start(true);
 	},
 
-	detach : function (dialog) {
-		this.panel.removeChild(dialog.$.frame);
-		this.dialogs.remove(dialog);
+	detach : function (overlay) {
+		this.panel.removeChild(overlay.$.frame);
 		this.updater.start(true);
 	},
 
 	handleBackPressed : function () {
-		var dialog = this.dialogs.top();
-		if (!dialog)
+		var target = this.panel.lastElementChild;
+		if (!target)
 			return false;
-		dialog.handleBackPressed();
+		target.handleBackPressed();
 		return true;
 	},
 
@@ -98,7 +88,7 @@ return Class.create(SuperClass, {
 		var attrs = this.$;
 		attrs.active = false;
 		attrs.tasks = {};
-		attrs.dialogManager = new DialogManager();
+		attrs.overlayManager = new OverlayManager();
 
 		attrs.creating = true;
 		this.invokeMethodAndEnsureSuperCalled('onCreate', state);
@@ -128,7 +118,7 @@ return Class.create(SuperClass, {
 	resume : function () {
 		this.$.active = true;
 		staple.application.onTitleChanged(this.getTitle());
-		this.$.dialogManager.resume();
+		this.$.overlayManager.resume();
 		this.invokeMethodAndEnsureSuperCalled('onResume');
 	},
 
@@ -142,7 +132,7 @@ return Class.create(SuperClass, {
 
 	pause : function () {
 		this.invokeMethodAndEnsureSuperCalled('onPause');
-		this.$.dialogManager.pause();
+		this.$.overlayManager.pause();
 		this.$.active = false;
 	},
 

@@ -34,7 +34,7 @@ return Class.create(SuperClass, {
 		$super();
 		var attrs = this.$;
 
-		attrs.dialogManager = interaction.$.dialogManager;
+		attrs.overlayManager = interaction.$.overlayManager;
 
 		var outsideTouchHandler = (function () {
 			if (!this.cancelable || !this.cancelOnTouchOutside)
@@ -85,41 +85,51 @@ return Class.create(SuperClass, {
 	},
 
 	show : function () {
-		if (this.$.showing)
+		var attrs = this.$;
+
+		if (attrs.showing)
 			return;
 
-		if (!this.$.created)
+		if (!attrs.created)
 			this.dispatchOnCreate();
 
-		this.$.showing = true;
-		this.$.dialogManager.attach(this);
-		this.$.task.start(true);
+		attrs.showing = true;
+		attrs.overlayManager.attach(this);
+		attrs.task.start(true);
 
 		this.onResume();
 		this.dispatchToListener('onShow');
 	},
 
 	dispatchOnCreate : function (state) {
-		if (this.$.created)
+		var attrs = this.$;
+
+		if (attrs.created)
 			return;
-		this.$.frame = window.document.createElement('div');
-		this.$.creating = true;
+
+		attrs.frame = window.document.createElement('div');
+		attrs.frame.id = 'dialog';
+		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
+
+		attrs.creating = true;
 		this.onCreate(state);
-		delete this.$.creating;
-		this.$.created = true;
+		delete attrs.creating;
+		attrs.created = true;
 	},
 
 	dismiss : function () {
-		if (!this.$.showing)
+		var attrs = this.$;
+
+		if (!attrs.showing)
 			return;
 
 		this.dispatchToListener('onDismiss');
 		this.onPause();
 
-		this.$.task.stop();
-		this.$.detachOutsideTouchHandler();
-		this.$.dialogManager.detach(this);
-		this.$.showing = false;
+		attrs.task.stop();
+		attrs.detachOutsideTouchHandler();
+		attrs.overlayManager.detach(this);
+		attrs.showing = false;
 	},
 
 	cancel : function () {
@@ -143,6 +153,7 @@ return Class.create(SuperClass, {
 		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'dialog')
 			throw new Error('Content must be a <dialog> element');
 
+		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		this.$.frame.innerHTML = '';
 		this.$.frame.appendChild(this.$.root = content);
 	},

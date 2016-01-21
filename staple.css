@@ -55,7 +55,7 @@ html body>article#desktop>section {
 	background-color: white;
 }
 
-html body>article#dialogs {
+html body>article#overlay {
 	-webkit-transition: opacity .2s cubic-bezier(.7,0,.3,1);
 	transition: opacity .2s cubic-bezier(.7,0,.3,1);
 	background: transparent;
@@ -63,15 +63,14 @@ html body>article#dialogs {
 	opacity: 0;
 }
 
-html body>article#dialogs.active {
+html body>article#overlay.active {
 	z-index: 10000;
 	opacity: 1;
 }
 
-html body>article#dialogs>div {
+html body>article#overlay>div {
 	box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-	padding: 16px;
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -79,13 +78,14 @@ html body>article#dialogs>div {
 	background: transparent;
 }
 
-html body>article#dialogs>div:last-child {
+html body>article#overlay>div#dialog.active {
 	background-color: rgba(0,0,0,.54);
 }
 
-html body>article#dialogs>div>dialog {
+html body>article#overlay>div>dialog {
 	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1);
 	transition: transform .2s cubic-bezier(.4,1,.6,1);
+	background-color: white;
 	position: absolute;
 	left: 50%;
 	top: 45%;
@@ -98,9 +98,26 @@ html body>article#dialogs>div>dialog {
 	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
-html body>article#dialogs.active>div>dialog {
+html body>article#overlay.active>div>dialog {
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
+}
+
+html body>article#overlay>div>div {
+	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1);
+	transition: transform .2s cubic-bezier(.4,1,.6,1);
+	background-color: white;
+	position: absolute;
+	-webkit-transform: scale(.85);
+	transform: scale(.85);
+	display: block;
+	border: none;
+	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+html body>article#overlay.active>div>div {
+	-webkit-transform: none;
+	transform: none;
 }
 
 html [center]  {
