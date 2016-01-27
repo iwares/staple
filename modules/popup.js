@@ -30,7 +30,7 @@ var HTMLParser = require('staple/html-parser');
 
 return Class.create(SuperClass, {
 
-	initialize : function ($super, interaction, content, gravity) {
+	initialize : function ($super, interaction, gravity, content) {
 		$super();
 		var attrs = this.$;
 
@@ -38,20 +38,10 @@ return Class.create(SuperClass, {
 		attrs.frame.id = 'popup';
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
-		if (Object.isString(content)) {
-			var elements = HTMLParser.parse(content);
-			if (elements.length != 1)
-				throw new Error('Invalid content');
-			content = elements[0];
-		}
-
-		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'div')
-			throw new Error('Content must be a <div> element');
-
-		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
-		attrs.frame.appendChild(this.$.root = content);
-
 		attrs.gravity = gravity;
+
+		if (content)
+			this.setContent(content);
 
 		attrs.overlayManager = interaction.$.overlayManager;
 
@@ -73,6 +63,27 @@ return Class.create(SuperClass, {
 		attrs.showing = false;
 	},
 
+	setContent : function (content) {
+		if (Object.isString(content)) {
+			var elements = HTMLParser.parse(content);
+			if (elements.length != 1)
+				throw new Error('Invalid content');
+			content = elements[0];
+		}
+
+		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'div')
+			throw new Error('Content must be a <div> element');
+
+		var attrs = this.$;
+		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
+		attrs.frame.innerHTML = '';
+		attrs.frame.appendChild(this.$.root = content);
+
+		if (!attrs.showing)
+			return;
+		this.adjustPopupPosition();
+	},
+
 	showAtLocation : function (x, y) {
 		var attrs = this.$;
 		attrs.x = x;
@@ -89,9 +100,13 @@ return Class.create(SuperClass, {
 
 	adjustPopupPosition : function () {
 		var attrs = this.$;
+
+		if (!attrs.showing || !attrs.root)
+			return;
+
 		var ox = attrs.x, oy = attrs.y, x = ox, y = oy;
 
-		var pgstrs = (attrs.gravity || '').replace(/\s+/g, '').split('|'), pgs = {};
+		var pgstrs = (attrs.gravity || '').replace(/\s+/g, '').split('|');
 		for (var i = 0, pg; pg = pgstrs[i]; ++i) {
 			switch (pg) {
 			case 'left':
@@ -116,11 +131,10 @@ return Class.create(SuperClass, {
 	},
 
 	showAsDropDown : function (anchor, tx, ty, gravity) {
-		var attrs = this.$;
 		var arect = anchor.getBoundingClientRect();
 
 		var x = arect.left, y = arect.top;
-		var agstrs = (gravity || '').replace(/\s+/g, '').split('|'), ags = {};
+		var agstrs = (gravity || '').replace(/\s+/g, '').split('|');
 		for (var i = 0, ag; ag = agstrs[i]; ++i) {
 			switch (ag) {
 			case 'left':
