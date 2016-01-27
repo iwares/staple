@@ -143,8 +143,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	resume : function () {
-		var attrs = this.$, interaction = attrs.active,
-			contexts = attrs.contexts;
+		var attrs = this.$, interaction = attrs.active;
 
 		if (!attrs.paused)
 			return;
