@@ -75,7 +75,7 @@ function $A(t){if(!t)return[];if("toArray"in Object(t))return t.toArray();for(va
 
 // Staple object.
 var staple = {
-	version : '0.1.0.0',
+	version : '0.8.2',
 }
 
 
