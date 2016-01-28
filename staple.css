@@ -78,7 +78,7 @@ html body>article#overlay>div {
 	background: transparent;
 }
 
-html body>article#overlay>div#dialog.active {
+html body>article#overlay>div.dim.active {
 	background-color: rgba(0,0,0,.54);
 }
 
@@ -116,6 +116,53 @@ html body>article#overlay>div>div {
 }
 
 html body>article#overlay.active>div>div {
+	-webkit-transform: none;
+	transform: none;
+}
+
+html body>article#overlay>div>aside {
+	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1);
+	transition: transform .2s cubic-bezier(.4,1,.6,1);
+	background-color: white;
+	position: absolute;
+	display: block;
+	border: none;
+	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
+}
+
+html body>article#overlay>div>aside.left {
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	-webkit-transform: translate(-100%,0);
+	transform: translate(-100%,0);
+}
+
+html body>article#overlay>div>aside.right {
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	-webkit-transform: translate(100%,0);
+	transform: translate(100%,0);
+}
+
+html body>article#overlay>div>aside.top {
+	right: 0px;
+	left: 0px;
+	top: 0px;
+	-webkit-transform: translate(0,-100%);
+	transform: translate(0,-100%);
+}
+
+html body>article#overlay>div>aside.bottom {
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+	-webkit-transform: translate(0,100%);
+	transform: translate(0,100%);
+}
+
+html body>article#overlay.active>div>aside {
 	-webkit-transform: none;
 	transform: none;
 }

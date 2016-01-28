@@ -34,7 +34,7 @@ var OverlayManager = Class.create({
 	initialize : function () {
 		this.panel = window.document.createElement('article');
 		this.panel.id = 'overlay';
-		this.updater = new PeriodicalTask(0, false, this);
+		this.updater = new PeriodicalTask(100, false, this);
 	},
 
 	resume : function () {
@@ -50,7 +50,7 @@ var OverlayManager = Class.create({
 	run : function () {
 		var panel = this.panel;
 
-		var dialogs = panel.querySelectorAll("div#dialog");
+		var dialogs = panel.querySelectorAll("article#overlay>div.dim");
 		for (var i = 0, dialog; dialog = dialogs[i]; ++i)
 			dialog.classList.remove('active');
 		if (dialogs.length)
@@ -69,7 +69,7 @@ var OverlayManager = Class.create({
 
 	detach : function (overlay) {
 		this.panel.removeChild(overlay.$.frame);
-		this.updater.start(true);
+		this.run();
 	},
 
 	handleBackPressed : function () {

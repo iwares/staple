@@ -109,6 +109,7 @@ return Class.create(SuperClass, {
 
 		attrs.frame = window.document.createElement('div');
 		attrs.frame.id = 'dialog';
+		attrs.frame.classList.add('dim');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.creating = true;
