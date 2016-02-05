@@ -1,6 +1,6 @@
 # Staple
 
-Staple is a handset SPA(single page web appliction) framework base on prototylejs and requirejs. It implements complete page load/navigation logic and many other details, so developers can focus on their business. At the same time, object-oriented programming style makes code clean and maintainable. Staple can work with many other js libraries and frameworks, such like jQuery and bootstrap. Also, Staple is a perfect companion of Cordova.
+Staple is a handset SPA(single page web appliction) framework bases on [Prototype](http://prototypejs.org/) and [RequireJS](http://requirejs.org/). It implements complete page load/navigation logic and many other details, so developers can focus on their business. At the same time, object-oriented programming style makes code clean and maintainable. Staple can work with many other js libraries and frameworks, such like [jQuery](http://jquery.com/) and [bootstrap](http://getbootstrap.com/). Also, Staple is a perfect companion of [Cordova](http://cordova.apache.org/).
 
 Features:
 * Fully object-oriented programming, modular programming.
