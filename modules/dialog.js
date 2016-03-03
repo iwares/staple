@@ -32,9 +32,9 @@ return Class.create(SuperClass, {
 
 	initialize : function ($super, interaction) {
 		$super();
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
-		attrs.overlayManager = interaction.$.overlayManager;
+		attrs.overlayManager = interaction.$attrs.overlayManager;
 
 		var outsideTouchHandler = (function () {
 			if (!this.cancelable || !this.cancelOnTouchOutside)
@@ -85,7 +85,7 @@ return Class.create(SuperClass, {
 	},
 
 	show : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (attrs.showing)
 			return;
@@ -102,7 +102,7 @@ return Class.create(SuperClass, {
 	},
 
 	dispatchOnCreate : function (state) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (attrs.created)
 			return;
@@ -119,7 +119,7 @@ return Class.create(SuperClass, {
 	},
 
 	dismiss : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (!attrs.showing)
 			return;
@@ -134,14 +134,14 @@ return Class.create(SuperClass, {
 	},
 
 	cancel : function () {
-		if (!this.$.showing)
+		if (!this.$attrs.showing)
 			return;
 		this.dispatchToListener('onCancel');
 		this.dismiss();
 	},
 
 	setContent : function (content) {
-		if (!this.$.creating)
+		if (!this.$attrs.creating)
 			throw new Error('setContent() must be called during onCreate()');
 
 		if (Object.isString(content)) {
@@ -155,19 +155,19 @@ return Class.create(SuperClass, {
 			throw new Error('Content must be a <dialog> element');
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
-		this.$.frame.innerHTML = '';
-		this.$.frame.appendChild(this.$.root = content);
+		this.$attrs.frame.innerHTML = '';
+		this.$attrs.frame.appendChild(this.$attrs.root = content);
 	},
 
 	select : function(selector) {
-		var root = this.$.root;
+		var root = this.$attrs.root;
 		if (selector === '$root')
 			return [ root ];
 		return $A(root.querySelectorAll(selector));
 	},
 
 	selectOne : function(selector) {
-		var root = this.$.root;
+		var root = this.$attrs.root;
 		if (selector === '$root')
 			return root;
 		return root.querySelector(selector);

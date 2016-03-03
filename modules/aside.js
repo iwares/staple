@@ -32,7 +32,7 @@ return Class.create(SuperClass, {
 
 	initialize : function ($super, interaction, gravity, content) {
 		$super();
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		attrs.frame = window.document.createElement('div');
 		attrs.frame.id = 'aside';
@@ -44,7 +44,7 @@ return Class.create(SuperClass, {
 		if (content)
 			this.setContent(content);
 
-		attrs.overlayManager = interaction.$.overlayManager;
+		attrs.overlayManager = interaction.$attrs.overlayManager;
 
 		var outsideTouchHandler = (function () {
 			this.dismiss();
@@ -75,7 +75,7 @@ return Class.create(SuperClass, {
 		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'aside')
 			throw new Error('Content must be a <aside> element');
 
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		switch (attrs.gravity) {
 		case 'bottom':
@@ -94,11 +94,11 @@ return Class.create(SuperClass, {
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		attrs.frame.innerHTML = '';
-		attrs.frame.appendChild(this.$.root = content);
+		attrs.frame.appendChild(this.$attrs.root = content);
 	},
 
 	show : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (attrs.showing)
 			return;
@@ -109,7 +109,7 @@ return Class.create(SuperClass, {
 	},
 
 	dismiss : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (!attrs.showing)
 			return;

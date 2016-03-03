@@ -251,21 +251,21 @@ define('staple/object', function (require, exports, module) {
 return Class.create({
 
 	initialize : function () {
-		this.$ = {};
-		this._ = {};
+		this.$attrs = {};
+		this.$temps = {};
 	},
 
 	invokeMethodAndEnsureSuperCalled : function (method, a, b, c, d, e) {
-		this._[method] = false;
+		this.$temps[method] = false;
 		var result = this[method](a, b, c, d, e);
-		if (this._[method] != method)
+		if (this.$temps[method] != method)
 			throw new Error('$super() not called in ' + method);
-		delete this._[method];
+		delete this.$temps[method];
 		return result;
 	},
 
 	notifySuperCalled : function (method) {
-		this._[method] = method;
+		this.$temps[method] = method;
 	},
 
 });

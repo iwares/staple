@@ -63,12 +63,12 @@ var OverlayManager = Class.create({
 	},
 
 	attach : function (overlay) {
-		this.panel.appendChild(overlay.$.frame);
+		this.panel.appendChild(overlay.$attrs.frame);
 		this.updater.start(true);
 	},
 
 	detach : function (overlay) {
-		this.panel.removeChild(overlay.$.frame);
+		this.panel.removeChild(overlay.$attrs.frame);
 		this.run();
 	},
 
@@ -85,7 +85,7 @@ var OverlayManager = Class.create({
 return Class.create(SuperClass, {
 
 	create : function (state) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		attrs.active = false;
 		attrs.tasks = {};
 		attrs.overlayManager = new OverlayManager();
@@ -95,7 +95,7 @@ return Class.create(SuperClass, {
 		delete attrs.creating;
 
 		// Delegate click event.
-		this.$.root.onclick = (function (event) {
+		this.$attrs.root.onclick = (function (event) {
 			var handler = this[event.target.dataset.click];
 			if (!Object.isFunction(handler))
 				return;
@@ -116,9 +116,9 @@ return Class.create(SuperClass, {
 	},
 
 	resume : function () {
-		this.$.active = true;
+		this.$attrs.active = true;
 		staple.application.onTitleChanged(this.getTitle());
-		this.$.overlayManager.resume();
+		this.$attrs.overlayManager.resume();
 		this.invokeMethodAndEnsureSuperCalled('onResume');
 	},
 
@@ -132,8 +132,8 @@ return Class.create(SuperClass, {
 
 	pause : function () {
 		this.invokeMethodAndEnsureSuperCalled('onPause');
-		this.$.overlayManager.pause();
-		this.$.active = false;
+		this.$attrs.overlayManager.pause();
+		this.$attrs.active = false;
 	},
 
 	onPause : function () {
@@ -150,7 +150,7 @@ return Class.create(SuperClass, {
 
 	destroy : function () {
 		this.invokeMethodAndEnsureSuperCalled('onDestroy');
-		var tasks = this.$.tasks;
+		var tasks = this.$attrs.tasks;
 		for (var key in tasks) {
 			var task = tasks[key];
 			task.stop();
@@ -163,7 +163,7 @@ return Class.create(SuperClass, {
 	},
 
 	handleBackPressed : function () {
-		if (this.$.dialogManager.handleBackPressed())
+		if (this.$attrs.dialogManager.handleBackPressed())
 			return;
 		this.onBackPressed();
 	},
@@ -174,11 +174,11 @@ return Class.create(SuperClass, {
 
 	finish : function () {
 		var im = InteractionManager.sharedInstance();
-		im.finishInteraction(this.$.context.uuid);
+		im.finishInteraction(this.$attrs.context.uuid);
 	},
 
 	startInteraction : function (name, extra, request) {
-		var im = InteractionManager.sharedInstance(), context = this.$.context,
+		var im = InteractionManager.sharedInstance(), context = this.$attrs.context,
 			parent = request ? context.uuid : undefined;
 		if (!request)
 			request = undefined;
@@ -186,11 +186,11 @@ return Class.create(SuperClass, {
 	},
 
 	getExtra : function () {
-		return this.$.context.extra;
+		return this.$attrs.context.extra;
 	},
 
 	setResult : function (result, data) {
-		var context = this.$.context;
+		var context = this.$attrs.context;
 		context.resultCode = result;
 		context.resultData = data;
 	},
@@ -230,7 +230,7 @@ return Class.create(SuperClass, {
 	},
 
 	setContent : function (content) {
-		if (!this.$.creating)
+		if (!this.$attrs.creating)
 			throw new Error('setContent() must be called during onCreate()');
 
 		if (Object.isString(content)) {
@@ -243,31 +243,31 @@ return Class.create(SuperClass, {
 		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'section')
 			throw new Error('Content must be a <section> element');
 
-		this.$.root = content;
+		this.$attrs.root = content;
 	},
 
 	getTitle : function () {
-		var root = this.$.root, title = root ? root.dataset.title : undefined;
+		var root = this.$attrs.root, title = root ? root.dataset.title : undefined;
 		return title ? title : staple.application.title;
 	},
 
 	setTitle : function (title) {
-		this.$.root.dataset.title = title;
-		if (!this.$.active)
+		this.$attrs.root.dataset.title = title;
+		if (!this.$attrs.active)
 			return;
 		var reslovedTitle = title ? title : staple.application.title;
 		staple.application.onTitleChanged(reslovedTitle);
 	},
 
 	select : function(selector) {
-		var root = this.$.root;
+		var root = this.$attrs.root;
 		if (selector === '$root')
 			return [ root ];
 		return $A(root.querySelectorAll(selector));
 	},
 
 	selectOne : function(selector) {
-		var root = this.$.root;
+		var root = this.$attrs.root;
 		if (selector === '$root')
 			return root;
 		return root.querySelector(selector);
@@ -276,12 +276,12 @@ return Class.create(SuperClass, {
 	scheduleRunnable : function (runnable, ms, repeat) {
 		var task = new PeriodicalTask(ms, repeat, runnable)
 		task.runnable = runnable;
-		this.$.tasks[task.id()] = task;
+		this.$attrs.tasks[task.id()] = task;
 		task.start();
 	},
 
 	cancelRunnables : function (runnable) {
-		var tasks = this.$.tasks;
+		var tasks = this.$attrs.tasks;
 		for (var key in tasks) {
 			var task = tasks[key];
 			if (task.runnable !== runnable)

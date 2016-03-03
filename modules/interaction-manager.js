@@ -44,7 +44,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	handleBackPressed : function () {
-		var active = this.$.active;
+		var active = this.$attrs.active;
 		if (!active)
 			return;
 		active.handleBackPressed();
@@ -54,7 +54,7 @@ var Clazz = Class.create(SuperClass, {
 		var body = window.document.body;
 
 		// Initialize loading indicator.
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		attrs.indicator = body.firstElementChild;
 		attrs.loading = false;
 
@@ -112,7 +112,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	pause : function () {
-		var attrs = this.$, interaction = attrs.active,
+		var attrs = this.$attrs, interaction = attrs.active,
 			contexts = attrs.contexts;
 
 		if (attrs.paused)
@@ -123,7 +123,7 @@ var Clazz = Class.create(SuperClass, {
 			return;
 
 		// Pause active interaction.
-		var context = interaction.$.context;
+		var context = interaction.$attrs.context;
 		interaction.pause();
 		var state = {};
 		interaction.performSaveInstanceState(state);
@@ -131,19 +131,19 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	saveState : function () {
-		if (this.$.contexts.length === 0)
+		if (this.$attrs.contexts.length === 0)
 			return undefined;
-		return { contexts : this.$.contexts }
+		return { contexts : this.$attrs.contexts }
 	},
 
 	restoreState : function (state) {
-		var attrs = this.$, contexts = attrs.contexts;
+		var attrs = this.$attrs, contexts = attrs.contexts;
 		contexts.clear();
 		Array.prototype.push.apply(contexts, state.contexts);
 	},
 
 	resume : function () {
-		var attrs = this.$, interaction = attrs.active;
+		var attrs = this.$attrs, interaction = attrs.active;
 
 		if (!attrs.paused)
 			return;
@@ -158,7 +158,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	destroy : function () {
-		var attrs = this.$, contexts = attrs.contexts;
+		var attrs = this.$attrs, contexts = attrs.contexts;
 		for (var i = contexts.length - 1, context; context = contexts[i]; --i) {
 			var interaction = instances[context.uuid];
 			if (!interaction)
@@ -180,7 +180,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	setBusy : function (busy) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		if (attrs.busy == busy)
 			return;
 		attrs.interrupter.style.zIndex = busy ? 1000000 : 0;
@@ -188,7 +188,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	setLoading : function (loading) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		if (attrs.loading == loading)
 			return;
 		var classes = attrs.indicator.classList;
@@ -200,7 +200,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	performStartInteraction : function (parent, request, target, extra) {
-		var attrs = this.$, interaction = attrs.active,
+		var attrs = this.$attrs, interaction = attrs.active,
 			contexts = attrs.contexts,
 			instances = attrs.instances;
 
@@ -244,7 +244,7 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	performFinishInteraction : function (uuid) {
-		var attrs = this.$, interaction = attrs.active,
+		var attrs = this.$attrs, interaction = attrs.active,
 			contexts = attrs.contexts,
 			instances = attrs.instances;
 
@@ -289,11 +289,11 @@ var Clazz = Class.create(SuperClass, {
 
 	instantiateActivedInteraction : function () {
 		// We are going to instantiate context which at the top of the stack.
-		var attrs = this.$, contexts = attrs.contexts,
+		var attrs = this.$attrs, contexts = attrs.contexts,
 			instances = attrs.instances;
 		var context = contexts.top();
 
-		if (!context || this.$.paused)
+		if (!context || this.$attrs.paused)
 			return;
 
 		// lookup instance from the instance map.
@@ -318,22 +318,22 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	doInteractionClassLoaded : function (context, clazz) {
-		var attrs = this.$, contexts = attrs.contexts;
+		var attrs = this.$attrs, contexts = attrs.contexts;
 
 		if (context != contexts.top())
 			return;
 
 		var interaction = new clazz();
-		interaction.$.context = context;
+		interaction.$attrs.context = context;
 
 		interaction.create();
 		this.doInteractionCreated(interaction);
 	},
 
 	doInteractionCreated : function (interaction) {
-		var attrs = this.$, contexts = attrs.contexts,
+		var attrs = this.$attrs, contexts = attrs.contexts,
 			instances = attrs.instances;
-		var context = interaction.$.context;
+		var context = interaction.$attrs.context;
 
 		if (context != contexts.top())
 			return;
@@ -345,7 +345,7 @@ var Clazz = Class.create(SuperClass, {
 			interaction.performRestoreInstanceState(context.state);
 		delete context.state;
 
-		var root = interaction.$.root;
+		var root = interaction.$attrs.root;
 		if (!root)
 			throw new Error('Please call setContent() during onCreate().');
 
@@ -366,7 +366,7 @@ var Clazz = Class.create(SuperClass, {
 		case 'finish':
 			top = attrs.previous;
 			out = attrs.previous;
-			attrs.desktop.insertBefore(root, top ? top.$.root : undefined);
+			attrs.desktop.insertBefore(root, top ? top.$attrs.root : undefined);
 			easing = EASINGO;
 			anim = 'staple-it-' + anim + '-out';
 			break;
@@ -386,19 +386,19 @@ var Clazz = Class.create(SuperClass, {
 		results.clear();
 
 		interaction.resume();
-		var cssText = top ? top.$.root.style.cssText : '';
+		var cssText = top ? top.$attrs.root.style.cssText : '';
 
 		function onAnimationComplete () {
 			if (top)
-				top.$.root.style.cssText = cssText;
+				top.$attrs.root.style.cssText = cssText;
 			if (out)
-				attrs.desktop.removeChild(out.$.root);
+				attrs.desktop.removeChild(out.$attrs.root);
 			this.setBusy(false);
 		}
 
 		if (anim && out) {
-			top.$.root.style.cssText += ';' + attrs.prefix + 'animation:' + anim + ' .2s ' + easing;
-			top.$.root.style.cssText += ';' + attrs.prefix + 'animation-fill-mode: both';
+			top.$attrs.root.style.cssText += ';' + attrs.prefix + 'animation:' + anim + ' .2s ' + easing;
+			top.$attrs.root.style.cssText += ';' + attrs.prefix + 'animation-fill-mode: both';
 			setTimeout(onAnimationComplete.bind(this), 300);
 		} else {
 			onAnimationComplete.apply(this);

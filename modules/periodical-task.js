@@ -30,7 +30,7 @@ return Class.create({
 
 	initialize : function(ms, repeat, runnable) {
 		var id = ++nextTaskId;
-		this.$ = {
+		this.$attrs = {
 			id : id,
 			runnable : runnable,
 			ms : ms,
@@ -39,7 +39,7 @@ return Class.create({
 	},
 
 	handler : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		if (!attrs.repeat)
 			delete attrs.tid;
 		var runnable = attrs.runnable || this;
@@ -47,7 +47,7 @@ return Class.create({
 	},
 
 	start : function (restart) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		if (attrs.tid) {
 			if (!restart)
 				return;
@@ -59,7 +59,7 @@ return Class.create({
 	},
 
 	stop : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		if (!attrs.tid)
 			return;
 		var stopFunc = attrs.repeat ? clearInterval : clearTimeout;
@@ -68,11 +68,11 @@ return Class.create({
 	},
 
 	id : function () {
-		return this.$.id;
+		return this.$attrs.id;
 	},
 
 	running : function () {
-		return this.$.tid ? true : false;
+		return this.$attrs.tid ? true : false;
 	},
 
 });

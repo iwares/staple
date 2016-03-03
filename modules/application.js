@@ -157,7 +157,7 @@ return Class.create(SuperClass, {
 
 	start : function (home, interaction, extra) {
 		var history = window.history, location = window.location,
-			attrs = this.$, features = this.meta['browser-features'],
+			attrs = this.$attrs, features = this.meta['browser-features'],
 			im = InteractionManager.sharedInstance();
 
 		// Check required browser features.
@@ -200,7 +200,7 @@ return Class.create(SuperClass, {
 	},
 
 	handlePopState : function () {
-		var history = window.history, attrs = this.$;
+		var history = window.history, attrs = this.$attrs;
 		if (history.state == '$1') {
 			history.back();
 			attrs.back = true;

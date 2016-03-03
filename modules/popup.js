@@ -32,7 +32,7 @@ return Class.create(SuperClass, {
 
 	initialize : function ($super, interaction, gravity, content) {
 		$super();
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		attrs.frame = window.document.createElement('div');
 		attrs.frame.id = 'popup';
@@ -43,7 +43,7 @@ return Class.create(SuperClass, {
 		if (content)
 			this.setContent(content);
 
-		attrs.overlayManager = interaction.$.overlayManager;
+		attrs.overlayManager = interaction.$attrs.overlayManager;
 
 		var outsideTouchHandler = (function () {
 			this.dismiss();
@@ -74,10 +74,10 @@ return Class.create(SuperClass, {
 		if (!(content instanceof HTMLElement) || content.tagName.toLowerCase() !== 'div')
 			throw new Error('Content must be a <div> element');
 
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		attrs.frame.innerHTML = '';
-		attrs.frame.appendChild(this.$.root = content);
+		attrs.frame.appendChild(this.$attrs.root = content);
 
 		if (!attrs.showing)
 			return;
@@ -85,7 +85,7 @@ return Class.create(SuperClass, {
 	},
 
 	showAtLocation : function (x, y) {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 		attrs.x = x;
 		attrs.y = y;
 
@@ -99,7 +99,7 @@ return Class.create(SuperClass, {
 	},
 
 	adjustPopupPosition : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (!attrs.showing || !attrs.root)
 			return;
@@ -158,11 +158,11 @@ return Class.create(SuperClass, {
 	},
 
 	setGravity : function (gravity) {
-		this.$.gravity = gravity;
+		this.$attrs.gravity = gravity;
 	},
 
 	dismiss : function () {
-		var attrs = this.$;
+		var attrs = this.$attrs;
 
 		if (!attrs.showing)
 			return;
