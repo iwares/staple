@@ -163,7 +163,7 @@ return Class.create(SuperClass, {
 	},
 
 	handleBackPressed : function () {
-		if (this.$attrs.dialogManager.handleBackPressed())
+		if (this.$attrs.overlayManager.handleBackPressed())
 			return;
 		this.onBackPressed();
 	},
