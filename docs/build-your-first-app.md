@@ -88,7 +88,7 @@ Then, you'll see two &lt;meta&gt; tags: "version-name" and "version-code". They 
 
 The &lt;title&gt; tag measns that it means.
 
-After the &lt;title&gt; tag, there is a CSS file(staple.css) which defines all styles that Staple required. Then, a &lt;meta&gt; tag defines styles for the loading indicator.
+After the &lt;title&gt; tag, there is a CSS file(staple.css) which defines all styles that Staple required. Then, a &lt;style&gt; tag defines styles for the loading indicator.
 
 At the end of &lt;head&gt;, we import RequireJS and then load Staple with it. The "data-main" attribute tells RequireJS to load Staple as the main module and the 'data-home' attribute specifies the home 'interaction' of Staple. An 'interaction' is a thing that can interact with the user, we will introduce it in the 'Interaction' section.
 
