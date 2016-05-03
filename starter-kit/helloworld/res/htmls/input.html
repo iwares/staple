@@ -1,0 +1,23 @@
+<!-- res/htmls/input.html -->
+<style type="text/css">
+	section#int-input {
+		padding: 16px;
+	}
+	section#int-input #input{
+		display: block;
+		width: 100%;
+		border-radius: 0;
+		border: none;
+		border-bottom: 1px solid black;
+		line-height: 24px;
+		margin: 16px 0;
+	}
+</style>
+
+<script type="text/html" id="interaction">
+	<section id="int-input" data-title="Edit">
+		<input id="input" type="text" placeholder="请输入文字">
+		<button data-click="onCancelClick">Cancel</button>
+		<button data-click="onOkClick">OK</button>
+	</section>
+</script>
