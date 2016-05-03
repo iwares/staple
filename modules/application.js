@@ -223,6 +223,40 @@ return Class.create(SuperClass, {
 		this.invokeMethodAndEnsureSuperCalled('onDestroy');
 	},
 
+	getSharedPreferences : function (name, shared) {
+		var namespace = shared ? '' : this.namespace,
+			key = name + '@' + namespace,
+			data;
+		var preferences = {
+			load : function () {
+				var json = localStorage.getItem(key);
+				if (!json) json = '{}';
+				data = json.evalJSON();
+			},
+			put : function(key, value) {
+				data[key] = value;
+				return this;
+			},
+			get : function(key) {
+				return data[key];
+			},
+			clear : function() {
+				data = {};
+				return this;
+			},
+			raw : function() {
+				return data;
+			},
+			commit : function() {
+				localStorage.setItem(key, Object.toJSON(data));
+			},
+		};
+		preferences.load();
+		delete namespace;
+		delete json;
+		return preferences;
+	},
+
 });
 
 });
