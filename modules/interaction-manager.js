@@ -158,7 +158,8 @@ var Clazz = Class.create(SuperClass, {
 	},
 
 	destroy : function () {
-		var attrs = this.$attrs, contexts = attrs.contexts;
+		var attrs = this.$attrs, contexts = attrs.contexts,
+			instances = attrs.instances;
 		for (var i = contexts.length - 1, context; context = contexts[i]; --i) {
 			var interaction = instances[context.uuid];
 			if (!interaction)
