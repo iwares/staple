@@ -11,14 +11,14 @@ $ mkdir helloworld
 $ cd helloworld
 ```
 
-Then, install RequireJS and Staple via bower:
+Then, install [RequireJS](http://requirejs.org/) and Staple via bower:
 
 ```shell
 $ bower install requirejs
 $ bower install staple
 ```
 
-However, RequireJS and Staple can be placed to anywhere, even another domain or CDN.
+However, [RequireJS](http://requirejs.org/) and Staple can be placed to anywhere, even another domain or CDN.
 
 ## index.html
 
@@ -90,7 +90,7 @@ The &lt;title&gt; tag measns that it means.
 
 After the &lt;title&gt; tag, there is a CSS file(staple.css) which defines all styles that Staple required. Then, a &lt;style&gt; tag defines styles for the loading indicator.
 
-At the end of &lt;head&gt;, we import RequireJS and then load Staple with it. The "data-main" attribute tells RequireJS to load Staple as the main module and the 'data-home' attribute specifies the home 'interaction' of Staple. An 'interaction' is a thing that can interact with the user, we will introduce it in the 'Interaction' section.
+At the end of &lt;head&gt;, we import [RequireJS](http://requirejs.org/) and then load Staple with it. The "data-main" attribute tells [RequireJS](http://requirejs.org/) to load Staple as the main module and the 'data-home' attribute specifies the home 'interaction' of Staple. An 'interaction' is a thing that can interact with the user, we will introduce it in the 'Interaction' section.
 
 In the &lt;body&gt; tag, an &lt;article&gt; tag with id "indicator" and class "active" is required by Staple, and it must be first child of the &lt;body&gt; tag. This &lt;article&gt; element will be displayed when Staple is busy loading resources.
 
@@ -123,7 +123,7 @@ In this file, we declare a new class extended from 'staple/applcition'. Staple w
 
 An 'interaction' is a full-screen window that can interact with the user. Now, let's create the home interaction whitch mentioned in index.html.
 
-In index.html, we specified 'js/main/home' module as the home interaction of our Staple app. According to RequireJS module name specification, it's a file named 'home.js' which located at 'js/main' folder.
+In index.html, we specified 'js/main/home' module as the home interaction of our Staple app. According to [RequireJS](http://requirejs.org/) module name specification, it's a file named 'home.js' which located at 'js/main' folder.
 
 Create the folder first:
 
@@ -153,9 +153,9 @@ return Class.create(Interaction, {
 });
 ```
 
-This class extends Staple's interaction class and overrides the "onCreate()" method. "onCreate()" class will be called when an interaction interaction is created. It is a good chance to do some initialization.
+This class extends Staple's interaction class and overrides the "onCreate()" method. "onCreate()" class will be called when an interaction instance is created. It is a good chance to do some initialization.
 
-The "setContent()" method is used to set content(visual user interface) to current interaction. The parameter can be a DOM element or a HTML snippet. In this example, we use a RequireJS plugin 'snippet' which provided by Staple to load HTML snippet from an special HTML file -- snippets file. 'res/htmls/home' is the path of the snippets file while 'interaction' is the ID of the HTML snippet. Be note that the content of a interaction must be a &lt;section&gt; element.
+The "setContent()" method is used to set content(visual user interface) to current interaction. The parameter can be a DOM element or a HTML snippet. In this example, we use a [RequireJS](http://requirejs.org/) plugin 'snippet' which provided by Staple to load HTML snippet from an special HTML file -- snippets file. 'res/htmls/home' is the path of the snippets file while 'interaction' is the ID of the HTML snippet. Be note that the content of a interaction must be a &lt;section&gt; element.
 
 Now, let's create this snippets file.
 
