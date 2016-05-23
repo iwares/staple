@@ -61,7 +61,14 @@ var browserFeatureCheckers = {
 		}
 	},
 
+	historyManagement : function () {
+		var h = window.history;
+		return typeof(h.pushState) === 'function' && typeof(h.replaceState) === 'function';
+	}
+
 };
+
+var requiredBrowserFeatures = [ 'sessionStorage', 'historyManagement'];
 
 return Class.create(SuperClass, {
 
@@ -122,8 +129,8 @@ return Class.create(SuperClass, {
 
 	onBrowserFeaturesNotSupport : function (features) {
 		alert('Browser Features Not Support:\n' + Object.toJSON(features));
-		// Staple cannot work without sessionStorage.
-		return features.include('sessionStorage');
+		// Do not continue by default.
+		return false;
 	},
 
 	loadThenDeleteApplicationState : function () {
@@ -162,7 +169,7 @@ return Class.create(SuperClass, {
 
 		// Check required browser features.
 		features = features ? features.split(',') : [];
-		features.push('sessionStorage');
+		features.concat(requiredBrowserFeatures);
 		features = this.checkBrowserFeatures(features.uniq());
 
 		if (features && this.onBrowserFeaturesNotSupport(features))
