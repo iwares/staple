@@ -96,7 +96,7 @@ return Class.create(SuperClass, {
 
 		// Delegate click event.
 		this.$attrs.root.onclick = (function (event) {
-			var handler = this[event.target.dataset.click];
+			var handler = this[event.target.getAttribute('on-click')];
 			if (!Object.isFunction(handler))
 				return;
 			handler.call(this, event.target);

@@ -229,8 +229,8 @@ First of all, we need another interaction. So, let'c create a new interaction wi
 <script type="text/html" id="interaction">
 	<section id="int-input" data-title="Edit">
 		<input id="input" type="text" placeholder="请输入文字">
-		<button data-click="onCancelClick">Cancel</button>
-		<button data-click="onOkClick">OK</button>
+		<button on-click="onCancelClick">Cancel</button>
+		<button on-click="onOkClick">OK</button>
 	</section>
 </script>
 ```
@@ -264,7 +264,7 @@ return Class.create(Interaction, {
 });
 ```
 
-You may notice the "data-click" attribute of button elements, this will bind buttons' click event to interaction's "onCancelClick()" and "onOkClick()" methods. "data-click" supports all visible HTML elements.
+You may notice the "on-click" attribute of button elements, this will bind buttons' click event to interaction's "onCancelClick()" and "onOkClick()" methods. "on-click" supports all visible HTML elements.
 
 In the "onCancelClick()" method, interaction's "finish()" is called. This will finish current interaction and navigate back to the previous interaction. If there is no previous interaction, Staple app will stop.
 
@@ -280,7 +280,7 @@ Edit snippets file:
 	<section id="int-home" data-title="Home">
 		<h1>Hello World</h1>
 		<p>This is my first app!</p>
-		<button data-click="onEditClick">Edit</button>
+		<button on-click="onEditClick">Edit</button>
 	</section>
 ...
 
