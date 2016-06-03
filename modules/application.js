@@ -29,8 +29,6 @@ var InteractionManager = require('staple/interaction-manager');
 
 var created = false;
 
-var STATE_KEY = 'staple/application/state';
-
 var browserFeatureCheckers = {
 
 	sessionStorage : function () {
@@ -134,7 +132,7 @@ return Class.create(SuperClass, {
 	},
 
 	loadThenDeleteApplicationState : function () {
-		var key = this.namespace + '$' + STATE_KEY;
+		var key = 'staple://' + this.namespace + '/imstate';
 		var json = sessionStorage[key];
 		if (!json)
 			return undefined;
@@ -143,7 +141,7 @@ return Class.create(SuperClass, {
 	},
 
 	saveApplicationState : function (state) {
-		var key = this.namespace + '$' + STATE_KEY;
+		var key = 'staple://' + this.namespace + '/imstate';
 		sessionStorage.removeItem(key);
 		if (!state)
 			return;
@@ -230,9 +228,9 @@ return Class.create(SuperClass, {
 		this.invokeMethodAndEnsureSuperCalled('onDestroy');
 	},
 
-	getSharedPreferences : function (name, shared) {
+	getPreferences : function (name, shared) {
 		var namespace = shared ? '' : this.namespace,
-			key = name + '@' + namespace,
+			key = 'staple://' + namespace + '/prefs/' + name,
 			data;
 		var preferences = {
 			load : function () {

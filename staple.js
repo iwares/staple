@@ -31,7 +31,7 @@ for (var i = 0, tag; tag = metaTags[i]; ++i)
 window.document.head.meta = meta;
 
 // Build a query string which will be used to bust the http cache.
-var bust = sessionStorage && sessionStorage['$bust'];
+var bust = sessionStorage && sessionStorage['staple:///bust'];
 
 if (!bust) {
 	bust = location.search.match(/[\?\&]_bust=([^\&]+)/i);
@@ -39,7 +39,7 @@ if (!bust) {
 	if (bust == 'timestamp')
 		bust = (new Date()).getTime();
 	try {
-		sessionStorage['$bust'] = bust;
+		sessionStorage['staple:///bust'] = bust;
 	} catch (e) {
 		// Do nothing.
 	}

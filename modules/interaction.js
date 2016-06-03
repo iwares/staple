@@ -195,8 +195,8 @@ return Class.create(SuperClass, {
 		context.resultData = data;
 	},
 
-	getSharedPreferences : function (name, shared) {
-		return staple.application.getSharedPreferences(name, shared);
+	getPreferences : function (name, shared) {
+		return staple.application.getPreferences(name, shared);
 	},
 
 	setContent : function (content) {

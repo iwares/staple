@@ -383,10 +383,11 @@ var Clazz = Class.create(SuperClass, {
 		// handle pending results.
 		var results = context.pendingResults;
 		// fatch and append external result.
-		var externalResult = sessionStorage[context.uuid];
+		var key = 'staple:///results/' + context.uuid;
+		var externalResult = sessionStorage[key];
 		if (externalResult)
 			results.push(externalResult.evalJSON());
-		sessionStorage.removeItem(context.uuid);
+		sessionStorage.removeItem(key);
 		// dispatch pending results.
 		for (var i = 0, r; r = results[i]; ++i)
 			interaction.onInteractionResult(r.request, r.result, r.data);

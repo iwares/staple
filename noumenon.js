@@ -75,12 +75,12 @@ function $A(t){if(!t)return[];if("toArray"in Object(t))return t.toArray();for(va
 
 // Staple object.
 var staple = {
-	version : '0.8.3',
+	version : '0.8.4',
 }
 
 
 // Preprocess all query parameters.
-var args = (sessionStorage['$args'] || "{}").evalJSON();
+var args = (sessionStorage['staple:///args'] || "{}").evalJSON();
 
 var search = window.location.search;
 var interaction, extra;
@@ -107,7 +107,7 @@ if (search) {
 		}
 	}
 
-	sessionStorage['$args'] = Object.toJSON(args);
+	sessionStorage['staple:///args'] = Object.toJSON(args);
 }
 
 
