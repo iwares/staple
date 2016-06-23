@@ -155,6 +155,7 @@ return Class.create(SuperClass, {
 			throw new Error('Content must be a <dialog> element');
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
+		content.open = true;
 		this.$attrs.frame.innerHTML = '';
 		this.$attrs.frame.appendChild(this.$attrs.root = content);
 	},
@@ -181,6 +182,14 @@ return Class.create(SuperClass, {
 		if (!this.cancelable)
 			return;
 		this.cancel();
+	},
+
+	isCreated : function () {
+		return this.$attrs.created;
+	},
+
+	isShowing : function () {
+		return this.$attrs.showing;
 	},
 
 });
