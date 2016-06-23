@@ -96,10 +96,15 @@ return Class.create(SuperClass, {
 
 		// Delegate click event.
 		this.$attrs.root.onclick = (function (event) {
-			var handler = this[event.target.getAttribute('on-click')];
-			if (!Object.isFunction(handler))
-				return;
-			handler.call(this, event.target);
+			var target = event.target;
+			while (target) {
+				var handler = this[target.getAttribute('on-click')];
+				if (Object.isFunction(handler)) {
+					handler.call(this, event.target);
+					break;
+				}
+				target = target.parentElement;
+			}
 		}).bind(this);
 	},
 
