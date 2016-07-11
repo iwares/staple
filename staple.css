@@ -30,7 +30,7 @@ html body, html {
 }
 
 html body>article, html body>article>section {
-	position: absolute;
+	position: absolute !important;
 	top: 0;
 	right: 0;
 	bottom: 0;

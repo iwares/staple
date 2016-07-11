@@ -353,7 +353,7 @@ var Clazz = Class.create(SuperClass, {
 		var EASINGI = 'cubic-bezier(.4,1,.6,1)',
 			EASINGO = 'cubic-bezier(.4,0,.6,0)';
 		var top, out, easing;
-		var anim = root.dataset.anim ? root.dataset.anim : 'default';
+		var anim;// = root.dataset.anim ? root.dataset.anim : 'default';
 
 		// Reslove animation configuration.
 		switch (attrs.animation) {
@@ -362,14 +362,14 @@ var Clazz = Class.create(SuperClass, {
 			out = attrs.previous;
 			attrs.desktop.appendChild(root);
 			easing = EASINGI;
-			anim = 'staple-it-' + anim;
+			anim = 'staple-it-' + (top.$attrs.root.dataset.anim || 'default');
 			break;
 		case 'finish':
 			top = attrs.previous;
 			out = attrs.previous;
 			attrs.desktop.insertBefore(root, top ? top.$attrs.root : undefined);
 			easing = EASINGO;
-			anim = 'staple-it-' + anim + '-out';
+			anim = 'staple-it-' + (top.$attrs.root.dataset.anim || 'default') + '-out';
 			break;
 		default:
 			top = interaction;
