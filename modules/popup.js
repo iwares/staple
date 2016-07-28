@@ -35,7 +35,7 @@ return Class.create(SuperClass, {
 		var attrs = this.$attrs;
 
 		attrs.frame = window.document.createElement('div');
-		attrs.frame.id = 'popup';
+		attrs.frame.classList.add('staple-overlay-mask');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.gravity = gravity;
@@ -76,6 +76,7 @@ return Class.create(SuperClass, {
 
 		var attrs = this.$attrs;
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
+		content.classList.add('staple-popup');
 		attrs.frame.innerHTML = '';
 		attrs.frame.appendChild(this.$attrs.root = content);
 

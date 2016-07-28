@@ -108,8 +108,8 @@ return Class.create(SuperClass, {
 			return;
 
 		attrs.frame = window.document.createElement('div');
-		attrs.frame.id = 'dialog';
-		attrs.frame.classList.add('dim');
+		attrs.frame.classList.add('staple-overlay-mask');
+		attrs.frame.classList.add('staple-overlay-mask-dim');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.creating = true;
@@ -156,6 +156,7 @@ return Class.create(SuperClass, {
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		content.open = true;
+		content.classList.add('staple-dialog');
 		this.$attrs.frame.innerHTML = '';
 		this.$attrs.frame.appendChild(this.$attrs.root = content);
 	},

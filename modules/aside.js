@@ -35,8 +35,8 @@ return Class.create(SuperClass, {
 		var attrs = this.$attrs;
 
 		attrs.frame = window.document.createElement('div');
-		attrs.frame.id = 'aside';
-		attrs.frame.classList.add('dim');
+		attrs.frame.classList.add('staple-overlay-mask');
+		attrs.frame.classList.add('staple-overlay-mask-dim');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.gravity = gravity;
@@ -79,20 +79,21 @@ return Class.create(SuperClass, {
 
 		switch (attrs.gravity) {
 		case 'bottom':
-			content.classList.add('bottom');
+			content.classList.add('staple-aside-bottom');
 			break;
 		case 'top':
-			content.classList.add('top');
+			content.classList.add('staple-aside-top');
 			break;
 		case 'right':
-			content.classList.add('right');
+			content.classList.add('staple-aside-right');
 			break;
 		default:
-			content.classList.add('left');
+			content.classList.add('staple-aside-left');
 			break;
 		}
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
+		content.classList.add('staple-aside');
 		attrs.frame.innerHTML = '';
 		attrs.frame.appendChild(this.$attrs.root = content);
 	},

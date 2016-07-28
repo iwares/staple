@@ -30,8 +30,8 @@ var UUID = require('staple/uuid');
 var created = false;
 
 var snippets = '' +
-	'<article id="interrupter"></article>' +
-	'<article id="desktop"></article>' +
+	'<article id="staple-interrupter"></article>' +
+	'<article id="staple-desktop"></article>' +
 	'';
 
 var Clazz = Class.create(SuperClass, {
@@ -194,9 +194,9 @@ var Clazz = Class.create(SuperClass, {
 			return;
 		var classes = attrs.indicator.classList;
 		if (loading)
-			classes.add('active');
+			classes.add('staple-active');
 		else
-			classes.remove('active');
+			classes.remove('staple-active');
 		attrs.loading = loading;
 	},
 
