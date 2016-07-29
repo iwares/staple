@@ -74,10 +74,12 @@ var OverlayManager = Class.create({
 
 	handleBackPressed : function () {
 		var target = this.panel.lastElementChild;
-		if (!target)
-			return false;
-		target.handleBackPressed();
-		return true;
+		while (target) {
+			if (target.handleBackPressed())
+				return true;
+			target = target.previousElementSibling;
+		}
+		return false;
 	},
 
 });

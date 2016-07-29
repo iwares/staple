@@ -61,6 +61,7 @@ body>article, body>article>section {
 	background: transparent;
 	z-index: -10;
 	opacity: 0;
+	pointer-events: none;
 }
 
 #staple-overlay.staple-active {
@@ -76,20 +77,21 @@ body>article, body>article>section {
 	height: 100%;
 	overflow: hidden;
 	background: transparent;
+	pointer-events: auto;
 }
 
-.staple-overlay-mask-dim.staple-active {
-	background-color: rgba(0,0,0,.54);
-}
+.staple-overlay-mask-dim.staple-active { background-color: rgba(0,0,0,.54); }
 
-.staple-dialog, .staple-popup, .staple-aside {
-	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1);
-	transition: transform .2s cubic-bezier(.4,1,.6,1);
+.staple-dialog, .staple-popup, .staple-aside, .staple-toast {
+	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.7,0,.3,1);
+	transition: transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.7,0,.3,1);
 	position: absolute;
-	background-color: white;
+	display: block;
 	border: none;
+	background-color: white;
 	padding: 0;
 	margin: 0;
+	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .staple-dialog {
@@ -97,7 +99,6 @@ body>article, body>article>section {
 	top: 45%;
 	-webkit-transform: translate(-50%, 96px) scale(.75);
 	transform: translate(-50%, 96px) scale(.75);
-	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 #staple-overlay.staple-active .staple-dialog {
@@ -108,20 +109,11 @@ body>article, body>article>section {
 .staple-popup {
 	-webkit-transform: scale(.85);
 	transform: scale(.85);
-	display: block;
-	border: none;
-	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 #staple-overlay.staple-active .staple-popup {
 	-webkit-transform: none;
 	transform: none;
-}
-
-.staple-aside {
-	display: block;
-	border: none;
-	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
 }
 
 .staple-aside.staple-aside-left {
@@ -160,6 +152,14 @@ body>article, body>article>section {
 	-webkit-transform: none;
 	transform: none;
 }
+
+.staple-toast {
+	opacity: 0;
+	pointer-events: auto;
+	z-index: 1000;
+}
+
+.staple-toast.staple-active { opacity: 1; }
 
 @keyframes staple-it-default {
 	from { left: 100%; }

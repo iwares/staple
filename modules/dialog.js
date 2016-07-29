@@ -177,6 +177,7 @@ return Class.create(SuperClass, {
 
 	handleBackPressed : function () {
 		this.onBackPressed();
+		return true;
 	},
 
 	onBackPressed : function () {

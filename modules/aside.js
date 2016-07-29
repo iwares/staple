@@ -123,6 +123,7 @@ return Class.create(SuperClass, {
 
 	handleBackPressed : function () {
 		this.dismiss();
+		return true;
 	},
 
 });
