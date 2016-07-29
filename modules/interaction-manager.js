@@ -172,6 +172,8 @@ var Clazz = Class.create(SuperClass, {
 
 	startInteraction : function (parent, request, target, extra) {
 		this.setBusy(true);
+		if (!Object.isUndefined(extra))
+			extra = Object.toJSON(extra).evalJSON();
 		setTimeout(this.performStartInteraction.bind(this, parent, request, target, extra));
 	},
 
