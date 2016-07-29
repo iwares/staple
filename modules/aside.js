@@ -98,6 +98,20 @@ return Class.create(SuperClass, {
 		attrs.frame.appendChild(this.$attrs.root = content);
 	},
 
+	select : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return [ root ];
+		return $A(root.querySelectorAll(selector));
+	},
+
+	selectOne : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return root;
+		return root.querySelector(selector);
+	},
+
 	show : function () {
 		var attrs = this.$attrs;
 

@@ -77,6 +77,20 @@ return Class.create(SuperClass, {
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 	},
 
+	select : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return [ root ];
+		return $A(root.querySelectorAll(selector));
+	},
+
+	selectOne : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return root;
+		return root.querySelector(selector);
+	},
+
 	show : function () {
 		var attrs = this.$attrs;
 

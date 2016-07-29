@@ -85,6 +85,20 @@ return Class.create(SuperClass, {
 		this.adjustPopupPosition();
 	},
 
+	select : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return [ root ];
+		return $A(root.querySelectorAll(selector));
+	},
+
+	selectOne : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return root;
+		return root.querySelector(selector);
+	},
+
 	showAtLocation : function (x, y) {
 		var attrs = this.$attrs;
 		attrs.x = x;
