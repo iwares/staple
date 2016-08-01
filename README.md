@@ -10,6 +10,7 @@ Features:
 * State staging and recovery when refresh or navigate back from other website.
 * Transfer data between pages.
 * Open specified page via url query parameters.
+* I18n Support.
 
 # Install Staple
 
