@@ -36,7 +36,6 @@ return Class.create(SuperClass, {
 
 		attrs.frame = window.document.createElement('div');
 		attrs.frame.classList.add('staple-overlay-mask');
-		attrs.frame.classList.add('staple-overlay-mask-dim');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.gravity = gravity;
@@ -58,8 +57,11 @@ return Class.create(SuperClass, {
 			this.frame.removeEventListener('click', outsideTouchHandler);
 		};
 
-		attrs.task = new PeriodicalTask(800, false);
-		attrs.task.run = attrs.attachOutsideTouchHandler.bind(attrs);
+		attrs.attachTask = new PeriodicalTask(800, false);
+		attrs.attachTask.run = attrs.attachOutsideTouchHandler.bind(attrs);
+
+		attrs.detachTask = new PeriodicalTask(200, false);
+		attrs.detachTask.run = attrs.overlayManager.detach.bind(attrs.overlayManager, this);
 
 		attrs.showing = false;
 	},
@@ -94,6 +96,8 @@ return Class.create(SuperClass, {
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		content.classList.add('staple-aside');
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = content.classList.add.bind(content.classList, 'staple-active');
 		attrs.frame.innerHTML = '';
 		attrs.frame.appendChild(this.$attrs.root = content);
 	},
@@ -120,7 +124,11 @@ return Class.create(SuperClass, {
 
 		attrs.showing = true;
 		attrs.overlayManager.attach(this);
-		attrs.task.start(true);
+		attrs.overlayManager.darken();
+
+		attrs.fadeinTask.start(true);
+		attrs.attachTask.start(true);
+		attrs.detachTask.stop();
 	},
 
 	dismiss : function () {
@@ -129,9 +137,12 @@ return Class.create(SuperClass, {
 		if (!attrs.showing)
 			return;
 
-		attrs.task.stop();
+		attrs.fadeinTask.stop();
+		attrs.attachTask.stop();
+		attrs.detachTask.start(true);
 		attrs.detachOutsideTouchHandler();
-		attrs.overlayManager.detach(this);
+		attrs.root.classList.remove('staple-active');
+		attrs.overlayManager.lighten();
 		attrs.showing = false;
 	},
 

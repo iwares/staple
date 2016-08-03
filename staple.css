@@ -56,8 +56,8 @@ body>article, body>article>section {
 }
 
 #staple-overlay {
-	-webkit-transition: opacity .2s cubic-bezier(.7,0,.3,1);
-	transition: opacity .2s cubic-bezier(.7,0,.3,1);
+	-webkit-transition: background .2s cubic-bezier(.4,0,.6,0);
+	transition: background .2s cubic-bezier(.4,0,.6,0);
 	background: transparent;
 	z-index: -10;
 	opacity: 0;
@@ -67,6 +67,12 @@ body>article, body>article>section {
 #staple-overlay.staple-active {
 	z-index: 10000;
 	opacity: 1;
+}
+
+#staple-overlay.staple-overlay-dim {
+	-webkit-transition: background .2s cubic-bezier(.4,1,.6,1);
+	transition: background .2s cubic-bezier(.4,1,.6,1);
+	background: rgba(0,0,0,.54);
 }
 
 .staple-overlay-mask {
@@ -80,11 +86,9 @@ body>article, body>article>section {
 	pointer-events: auto;
 }
 
-.staple-overlay-mask-dim.staple-active { background-color: rgba(0,0,0,.54); }
-
 .staple-dialog, .staple-popup, .staple-aside, .staple-toast {
-	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.7,0,.3,1);
-	transition: transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.7,0,.3,1);
+	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,0,.6,0), opacity .2s cubic-bezier(.4,0,.6,0);
+	transition: transform .2s cubic-bezier(.4,0,.6,0), opacity .2s cubic-bezier(.4,0,.6,0);
 	position: absolute;
 	display: block;
 	border: none;
@@ -92,16 +96,23 @@ body>article, body>article>section {
 	padding: 0;
 	margin: 0;
 	box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.5);
+	opacity: 0;
+}
+
+.staple-dialog.staple-active, .staple-popup.staple-active, .staple-aside.staple-active, .staple-toast.staple-active {
+	-webkit-transition: -webkit-transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.4,1,.6,1);
+	transition: transform .2s cubic-bezier(.4,1,.6,1), opacity .2s cubic-bezier(.4,1,.6,1);
+	opacity: 1;
 }
 
 .staple-dialog {
 	left: 50%;
 	top: 45%;
-	-webkit-transform: translate(-50%, 96px) scale(.75);
-	transform: translate(-50%, 96px) scale(.75);
+	-webkit-transform: translate(-50%, 16px) scale(.5);
+	transform: translate(-50%, 16px) scale(.5);
 }
 
-#staple-overlay.staple-active .staple-dialog {
+.staple-dialog.staple-active {
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 }
@@ -111,7 +122,7 @@ body>article, body>article>section {
 	transform: scale(.85);
 }
 
-#staple-overlay.staple-active .staple-popup {
+.staple-popup.staple-active {
 	-webkit-transform: none;
 	transform: none;
 }
@@ -148,18 +159,15 @@ body>article, body>article>section {
 	transform: translate(0,100%);
 }
 
-#staple-overlay.staple-active .staple-aside {
+.staple-aside.staple-active {
 	-webkit-transform: none;
 	transform: none;
 }
 
 .staple-toast {
-	opacity: 0;
 	pointer-events: auto;
 	z-index: 1000;
 }
-
-.staple-toast.staple-active { opacity: 1; }
 
 @keyframes staple-it-default {
 	from { left: 100%; }

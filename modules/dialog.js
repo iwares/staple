@@ -50,8 +50,11 @@ return Class.create(SuperClass, {
 			this.frame.removeEventListener('click', outsideTouchHandler);
 		};
 
-		attrs.task = new PeriodicalTask(800, false);
-		attrs.task.run = attrs.attachOutsideTouchHandler.bind(attrs);
+		attrs.attachTask = new PeriodicalTask(800, false);
+		attrs.attachTask.run = attrs.attachOutsideTouchHandler.bind(attrs);
+
+		attrs.detachTask = new PeriodicalTask(200, false);
+		attrs.detachTask.run = attrs.overlayManager.detach.bind(attrs.overlayManager, this);
 
 		attrs.created = false;
 		attrs.showing = false;
@@ -95,7 +98,11 @@ return Class.create(SuperClass, {
 
 		attrs.showing = true;
 		attrs.overlayManager.attach(this);
-		attrs.task.start(true);
+		attrs.overlayManager.darken();
+
+		attrs.fadeinTask.start(true);
+		attrs.attachTask.start(true);
+		attrs.detachTask.stop();
 
 		this.onResume();
 		this.dispatchToListener('onShow');
@@ -109,7 +116,6 @@ return Class.create(SuperClass, {
 
 		attrs.frame = window.document.createElement('div');
 		attrs.frame.classList.add('staple-overlay-mask');
-		attrs.frame.classList.add('staple-overlay-mask-dim');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.creating = true;
@@ -127,9 +133,12 @@ return Class.create(SuperClass, {
 		this.dispatchToListener('onDismiss');
 		this.onPause();
 
-		attrs.task.stop();
+		attrs.fadeinTask.stop();
+		attrs.attachTask.stop();
+		attrs.detachTask.start(true);
 		attrs.detachOutsideTouchHandler();
-		attrs.overlayManager.detach(this);
+		attrs.root.classList.remove('staple-active');
+		attrs.overlayManager.lighten();
 		attrs.showing = false;
 	},
 
@@ -157,8 +166,11 @@ return Class.create(SuperClass, {
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		content.open = true;
 		content.classList.add('staple-dialog');
-		this.$attrs.frame.innerHTML = '';
-		this.$attrs.frame.appendChild(this.$attrs.root = content);
+		var attrs = this.$attrs;
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = content.classList.add.bind(content.classList, 'staple-active');
+		attrs.frame.innerHTML = '';
+		attrs.frame.appendChild(this.$attrs.root = content);
 	},
 
 	select : function(selector) {

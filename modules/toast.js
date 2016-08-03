@@ -36,6 +36,11 @@ return Class.create(SuperClass, {
 
 		duration = (duration == 'long') ? 3800 : 1800;
 
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = function () {
+			this.$attrs.frame.classList.add('staple-active');
+		}.bind(this);
+
 		attrs.fadeoutTask = new PeriodicalTask(duration, false);
 		attrs.fadeoutTask.run = function () {
 			this.$attrs.frame.classList.remove('staple-active');
@@ -99,9 +104,9 @@ return Class.create(SuperClass, {
 			attrs.overlayManager.attach(this);
 		}
 
-		attrs.frame.classList.add('staple-active');
-		attrs.dismissTask.stop();
+		attrs.fadeinTask.start(false);
 		attrs.fadeoutTask.start(true);
+		attrs.dismissTask.stop();
 	},
 
 	dismiss : function () {
@@ -110,8 +115,9 @@ return Class.create(SuperClass, {
 		if (!attrs.showing)
 			return;
 
-		attrs.dismissTask.stop();
 		attrs.fadeoutTask.stop();
+		attrs.fadeinTask.stop();
+		attrs.dismissTask.stop();
 		attrs.overlayManager.detach(this);
 		attrs.showing = false;
 	},

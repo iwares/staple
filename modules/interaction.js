@@ -35,6 +35,7 @@ var OverlayManager = Class.create({
 		this.panel = window.document.createElement('article');
 		this.panel.id = 'staple-overlay';
 		this.updater = new PeriodicalTask(100, false, this);
+		this.darkness = 0;
 	},
 
 	resume : function () {
@@ -47,19 +48,28 @@ var OverlayManager = Class.create({
 		window.document.body.removeChild(this.panel);
 	},
 
+	darken : function () {
+		++this.darkness;
+		this.updater.start(true);
+	},
+
+	lighten : function () {
+		--this.darkness;
+		this.updater.start(true);
+	},
+
 	run : function () {
 		var panel = this.panel;
-
-		var dialogs = panel.querySelectorAll(".staple-overlay-mask-dim");
-		for (var i = 0, dialog; dialog = dialogs[i]; ++i)
-			dialog.classList.remove('staple-active');
-		if (dialogs.length)
-			dialogs[dialogs.length - 1].classList.add('staple-active');
 
 		if (panel.childElementCount === 0)
 			panel.classList.remove('staple-active');
 		else
 			panel.classList.add('staple-active');
+
+		if (this.darkness === 0)
+			panel.classList.remove('staple-overlay-dim');
+		else
+			panel.classList.add('staple-overlay-dim');
 	},
 
 	attach : function (overlay) {
