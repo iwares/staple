@@ -30,9 +30,16 @@ var HTMLParser = require('staple/html-parser');
 
 return Class.create(SuperClass, {
 
-	initialize : function ($super, interaction) {
+	initialize : function ($super, interaction, content) {
 		$super();
 		var attrs = this.$attrs;
+
+		attrs.frame = window.document.createElement('div');
+		attrs.frame.classList.add('staple-overlay-mask');
+		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
+
+		if (content)
+			this.setContent(content);
 
 		attrs.overlayManager = interaction.$attrs.overlayManager;
 
@@ -56,28 +63,7 @@ return Class.create(SuperClass, {
 		attrs.detachTask = new PeriodicalTask(200, false);
 		attrs.detachTask.run = attrs.overlayManager.detach.bind(attrs.overlayManager, this);
 
-		attrs.created = false;
 		attrs.showing = false;
-	},
-
-	onCreate : function (state) {
-		// Default do nothing.
-	},
-
-	onRestoreInstanceState : function (state) {
-		// Default do nothing.
-	},
-
-	onResume : function () {
-		// Default do nothing.
-	},
-
-	onPause : function () {
-		// Default do nothing.
-	},
-
-	onSaveInstanceState : function (state) {
-		// Default do nothing.
 	},
 
 	dispatchToListener : function (eventName) {
@@ -93,9 +79,6 @@ return Class.create(SuperClass, {
 		if (attrs.showing)
 			return;
 
-		if (!attrs.created)
-			this.dispatchOnCreate();
-
 		attrs.showing = true;
 		attrs.overlayManager.attach(this);
 		attrs.overlayManager.darken();
@@ -104,24 +87,7 @@ return Class.create(SuperClass, {
 		attrs.attachTask.start(true);
 		attrs.detachTask.stop();
 
-		this.onResume();
 		this.dispatchToListener('onShow');
-	},
-
-	dispatchOnCreate : function (state) {
-		var attrs = this.$attrs;
-
-		if (attrs.created)
-			return;
-
-		attrs.frame = window.document.createElement('div');
-		attrs.frame.classList.add('staple-overlay-mask');
-		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
-
-		attrs.creating = true;
-		this.onCreate(state);
-		delete attrs.creating;
-		attrs.created = true;
 	},
 
 	dismiss : function () {
@@ -131,7 +97,6 @@ return Class.create(SuperClass, {
 			return;
 
 		this.dispatchToListener('onDismiss');
-		this.onPause();
 
 		attrs.fadeinTask.stop();
 		attrs.attachTask.stop();
@@ -150,9 +115,6 @@ return Class.create(SuperClass, {
 	},
 
 	setContent : function (content) {
-		if (!this.$attrs.creating)
-			throw new Error('setContent() must be called during onCreate()');
-
 		if (Object.isString(content)) {
 			var elements = HTMLParser.parse(content);
 			if (elements.length != 1)
@@ -196,10 +158,6 @@ return Class.create(SuperClass, {
 		if (!this.cancelable)
 			return;
 		this.cancel();
-	},
-
-	isCreated : function () {
-		return this.$attrs.created;
 	},
 
 	isShowing : function () {
