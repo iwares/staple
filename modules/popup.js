@@ -57,6 +57,14 @@ return Class.create(SuperClass, {
 			this.frame.removeEventListener('click', outsideTouchHandler);
 		};
 
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = (function () {
+			var root = this.$attrs.root;
+			if (!root)
+				return;
+			root.classList.add('staple-active');
+		}).bind(this);
+
 		attrs.attachTask = new PeriodicalTask(800, false);
 		attrs.attachTask.run = attrs.attachOutsideTouchHandler.bind(attrs);
 
@@ -80,8 +88,6 @@ return Class.create(SuperClass, {
 		var attrs = this.$attrs;
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
 		content.classList.add('staple-popup');
-		attrs.fadeinTask = new PeriodicalTask(100, false);
-		attrs.fadeinTask.run = content.classList.add.bind(content.classList, 'staple-active');
 		attrs.frame.innerHTML = '';
 		attrs.frame.appendChild(this.$attrs.root = content);
 
@@ -193,7 +199,8 @@ return Class.create(SuperClass, {
 		attrs.attachTask.stop();
 		attrs.detachTask.start(true);
 		attrs.detachOutsideTouchHandler();
-		attrs.root.classList.remove('staple-active');
+		if (attrs.root)
+			attrs.root.classList.remove('staple-active');
 		attrs.showing = false;
 	},
 
