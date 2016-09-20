@@ -329,7 +329,7 @@ var Clazz = Class.create(SuperClass, {
 		var interaction = new clazz();
 		interaction.$attrs.context = context;
 
-		interaction.create();
+		interaction.create(context.state);
 		this.doInteractionCreated(interaction);
 	},
 
