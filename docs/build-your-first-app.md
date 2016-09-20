@@ -51,11 +51,11 @@ Next, we will create an HTML file. It is the entry of your site, and also the co
 
 	<!-- inline styles for loading indicator-->
 	<style type="text/css">
-		html body>article#indicator {
+		#staple-indicator {
 			background-color: rgba(0, 0, 0, .8);
 			color: white;
 		}
-		html body>article#indicator>div  {
+		#staple-indicator>div  {
 			position: absolute;
 			left: 50%;
 			top: 50%;
@@ -74,7 +74,7 @@ Next, we will create an HTML file. It is the entry of your site, and also the co
 
 <body>
 	<!-- loading indicator, required by Staple! -->
-	<article id="indicator" class="active">
+	<article id="staple-indicator" class="staple-active">
 		<div>Loading...</div>
 	</article>
 </body>
@@ -92,7 +92,7 @@ After the &lt;title&gt; tag, there is a CSS file(staple.css) which defines all s
 
 At the end of &lt;head&gt;, we import [RequireJS](http://requirejs.org/) and then load Staple with it. The "data-main" attribute tells [RequireJS](http://requirejs.org/) to load Staple as the main module and the 'data-home' attribute specifies the home 'interaction' of Staple. An 'interaction' is a thing that can interact with the user, we will introduce it in the 'Interaction' section.
 
-In the &lt;body&gt; tag, an &lt;article&gt; tag with id "indicator" and class "active" is required by Staple, and it must be first child of the &lt;body&gt; tag. This &lt;article&gt; element will be displayed when Staple is busy loading resources.
+In the &lt;body&gt; tag, an &lt;article&gt; tag with id "staple-indicator" and class "staple-active" is required by Staple, and it must be first child of the &lt;body&gt; tag. This &lt;article&gt; element will be displayed when Staple is busy loading resources.
 
 ## appliction.js
 

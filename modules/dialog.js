@@ -30,9 +30,16 @@ var HTMLParser = require('staple/html-parser');
 
 return Class.create(SuperClass, {
 
-	initialize : function ($super, interaction) {
+	initialize : function ($super, interaction, content) {
 		$super();
 		var attrs = this.$attrs;
+
+		attrs.frame = window.document.createElement('div');
+		attrs.frame.classList.add('staple-overlay-mask');
+		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
+
+		if (content)
+			this.setContent(content);
 
 		attrs.overlayManager = interaction.$attrs.overlayManager;
 
@@ -50,31 +57,21 @@ return Class.create(SuperClass, {
 			this.frame.removeEventListener('click', outsideTouchHandler);
 		};
 
-		attrs.task = new PeriodicalTask(800, false);
-		attrs.task.run = attrs.attachOutsideTouchHandler.bind(attrs);
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = (function () {
+			var root = this.$attrs.root;
+			if (!root)
+				return;
+			root.classList.add('staple-active');
+		}).bind(this);
 
-		attrs.created = false;
+		attrs.attachTask = new PeriodicalTask(800, false);
+		attrs.attachTask.run = attrs.attachOutsideTouchHandler.bind(attrs);
+
+		attrs.detachTask = new PeriodicalTask(200, false);
+		attrs.detachTask.run = attrs.overlayManager.detach.bind(attrs.overlayManager, this);
+
 		attrs.showing = false;
-	},
-
-	onCreate : function (state) {
-		// Default do nothing.
-	},
-
-	onRestoreInstanceState : function (state) {
-		// Default do nothing.
-	},
-
-	onResume : function () {
-		// Default do nothing.
-	},
-
-	onPause : function () {
-		// Default do nothing.
-	},
-
-	onSaveInstanceState : function (state) {
-		// Default do nothing.
 	},
 
 	dispatchToListener : function (eventName) {
@@ -90,32 +87,15 @@ return Class.create(SuperClass, {
 		if (attrs.showing)
 			return;
 
-		if (!attrs.created)
-			this.dispatchOnCreate();
-
 		attrs.showing = true;
 		attrs.overlayManager.attach(this);
-		attrs.task.start(true);
+		attrs.overlayManager.darken();
 
-		this.onResume();
+		attrs.fadeinTask.start(true);
+		attrs.attachTask.start(true);
+		attrs.detachTask.stop();
+
 		this.dispatchToListener('onShow');
-	},
-
-	dispatchOnCreate : function (state) {
-		var attrs = this.$attrs;
-
-		if (attrs.created)
-			return;
-
-		attrs.frame = window.document.createElement('div');
-		attrs.frame.id = 'dialog';
-		attrs.frame.classList.add('dim');
-		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
-
-		attrs.creating = true;
-		this.onCreate(state);
-		delete attrs.creating;
-		attrs.created = true;
 	},
 
 	dismiss : function () {
@@ -125,11 +105,14 @@ return Class.create(SuperClass, {
 			return;
 
 		this.dispatchToListener('onDismiss');
-		this.onPause();
 
-		attrs.task.stop();
+		attrs.fadeinTask.stop();
+		attrs.attachTask.stop();
+		attrs.detachTask.start(true);
 		attrs.detachOutsideTouchHandler();
-		attrs.overlayManager.detach(this);
+		if (attrs.root)
+			attrs.root.classList.remove('staple-active');
+		attrs.overlayManager.lighten();
 		attrs.showing = false;
 	},
 
@@ -141,9 +124,6 @@ return Class.create(SuperClass, {
 	},
 
 	setContent : function (content) {
-		if (!this.$attrs.creating)
-			throw new Error('setContent() must be called during onCreate()');
-
 		if (Object.isString(content)) {
 			var elements = HTMLParser.parse(content);
 			if (elements.length != 1)
@@ -155,8 +135,11 @@ return Class.create(SuperClass, {
 			throw new Error('Content must be a <dialog> element');
 
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
-		this.$attrs.frame.innerHTML = '';
-		this.$attrs.frame.appendChild(this.$attrs.root = content);
+		content.open = true;
+		content.classList.add('staple-dialog');
+		var attrs = this.$attrs;
+		attrs.frame.innerHTML = '';
+		attrs.frame.appendChild(this.$attrs.root = content);
 	},
 
 	select : function(selector) {
@@ -175,12 +158,17 @@ return Class.create(SuperClass, {
 
 	handleBackPressed : function () {
 		this.onBackPressed();
+		return true;
 	},
 
 	onBackPressed : function () {
 		if (!this.cancelable)
 			return;
 		this.cancel();
+	},
+
+	isShowing : function () {
+		return this.$attrs.showing;
 	},
 
 });

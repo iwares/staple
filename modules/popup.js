@@ -35,7 +35,7 @@ return Class.create(SuperClass, {
 		var attrs = this.$attrs;
 
 		attrs.frame = window.document.createElement('div');
-		attrs.frame.id = 'popup';
+		attrs.frame.classList.add('staple-overlay-mask');
 		attrs.frame.handleBackPressed = this.handleBackPressed.bind(this);
 
 		attrs.gravity = gravity;
@@ -57,8 +57,19 @@ return Class.create(SuperClass, {
 			this.frame.removeEventListener('click', outsideTouchHandler);
 		};
 
-		attrs.task = new PeriodicalTask(800, false);
-		attrs.task.run = attrs.attachOutsideTouchHandler.bind(attrs);
+		attrs.fadeinTask = new PeriodicalTask(100, false);
+		attrs.fadeinTask.run = (function () {
+			var root = this.$attrs.root;
+			if (!root)
+				return;
+			root.classList.add('staple-active');
+		}).bind(this);
+
+		attrs.attachTask = new PeriodicalTask(800, false);
+		attrs.attachTask.run = attrs.attachOutsideTouchHandler.bind(attrs);
+
+		attrs.detachTask = new PeriodicalTask(200, false);
+		attrs.detachTask.run = attrs.overlayManager.detach.bind(attrs.overlayManager, this);
 
 		attrs.showing = false;
 	},
@@ -76,12 +87,27 @@ return Class.create(SuperClass, {
 
 		var attrs = this.$attrs;
 		content.addEventListener('click', function (evt) { evt.stopPropagation(); });
+		content.classList.add('staple-popup');
 		attrs.frame.innerHTML = '';
 		attrs.frame.appendChild(this.$attrs.root = content);
 
 		if (!attrs.showing)
 			return;
 		this.adjustPopupPosition();
+	},
+
+	select : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return [ root ];
+		return $A(root.querySelectorAll(selector));
+	},
+
+	selectOne : function(selector) {
+		var root = this.$attrs.root;
+		if (selector === '$root')
+			return root;
+		return root.querySelector(selector);
 	},
 
 	showAtLocation : function (x, y) {
@@ -92,7 +118,9 @@ return Class.create(SuperClass, {
 		if (!attrs.showing) {
 			attrs.showing = true;
 			attrs.overlayManager.attach(this);
-			attrs.task.start(true);
+			attrs.fadeinTask.start(true);
+			attrs.attachTask.start(true);
+			attrs.detachTask.stop();
 		}
 
 		this.adjustPopupPosition();
@@ -167,14 +195,18 @@ return Class.create(SuperClass, {
 		if (!attrs.showing)
 			return;
 
-		attrs.task.stop();
+		attrs.fadeinTask.stop();
+		attrs.attachTask.stop();
+		attrs.detachTask.start(true);
 		attrs.detachOutsideTouchHandler();
-		attrs.overlayManager.detach(this);
+		if (attrs.root)
+			attrs.root.classList.remove('staple-active');
 		attrs.showing = false;
 	},
 
 	handleBackPressed : function () {
 		this.dismiss();
+		return true;
 	},
 
 });

@@ -75,7 +75,7 @@ function $A(t){if(!t)return[];if("toArray"in Object(t))return t.toArray();for(va
 
 // Staple object.
 var staple = {
-	version : '0.8.4',
+	version : '0.9.0',
 }
 
 
@@ -160,6 +160,104 @@ return Clazz;
 });
 
 
+// A module usd to load specified NLS(Native Language Support) bundle.
+define('nls', function (require, exports, module) {
+
+var NLSBundleLoader = Class.create({
+
+	initialize : function (bundle, languages, require, onload) {
+		this.bundle = bundle;
+		this.languages = languages;
+		this.require = require;
+		this.onload = onload;
+	},
+
+	load : function () {
+		// Load master of NLS bundle.
+		require([this.bundle + '/master'], this.onMasterLoaded.bind(this));
+	},
+
+	onMasterLoaded : function (master) {
+		var parts = this.parts = [], needed = this.needed = [],
+			names = [];
+		var languages = this.languages;
+
+		this.master = master;
+
+		// Checkout which stand-alone NLS parts need to load.
+		for (var i = languages.length - 1; i >= 0; --i) {
+			var language = languages[i];
+			if (!language)
+				continue;
+			language = language.toLowerCase();
+			var value = master[language];
+			if (!value)
+				continue;
+			parts.push(language);
+			if (typeof value === 'object')
+				continue;
+			needed.push(language);
+			names.push(this.bundle + '/' + language);
+		}
+
+		// Load needed stand-alone NLS parts
+		this.require(names, this.onPartsLoaded.bind(this));
+	},
+
+	onPartsLoaded : function () {
+		var master = this.master, needed = this.needed, parts = this.parts,
+			values = {};
+
+		// Add add stand-along NLS part to master.
+		for (var i = 0; i < needed.length; ++i)
+			master[needed[i]] = arguments[i];
+
+		// Mixin all locale parts into a bundle.
+		var bundle = { '@name' : this.bundle };
+		for (var i = 0, source; source = master[parts[i]]; ++i)
+			for (prop in source)
+				bundle[prop] = source[prop];
+
+		// Notify bundle loaded.
+		this.onload(bundle);
+	},
+
+});
+
+function load (name, require, onload, config) {
+	if (config.isBuild)
+		return onload(null)
+
+	var languages = [];
+
+	// Custom language.
+	try {
+		var custom = localStorage['staple:///language'];
+		if (custom) languages.push(custom);
+	} catch (e) {
+		// Do nothing.
+	}
+
+	// Browser languages
+	if (navigator.language)
+		languages.push(navigator.language);
+	if (navigator.languages)
+		languages = languages.concat(navigator.languages);
+
+	// Default language
+	languages.push('root');
+	languages = languages.uniq();
+
+	// Load bundle.
+	var loader = new NLSBundleLoader(name, languages, require, onload);
+	loader.load();
+}
+
+exports.load = load;
+
+});
+
+
 // A module usd to load specified snippet from specified HTML file.
 define('snippet', function (require, exports, module) {
 
@@ -203,7 +301,10 @@ var SnippetLoader = Class.create({
 			case 'script':
 				if (el.type !== 'text/html' || !el.id)
 					break;
-				snippets[el.id] = el.innerHTML.trim();
+				snippets[el.id] = {
+					html : el.innerHTML.trim(),
+					ready : false,
+				};
 				break;
 			default:
 				break;
@@ -223,10 +324,55 @@ var SnippetLoader = Class.create({
 		this.htmls[this.path] = snippets;
 		var snippet = snippets[this.id];
 
-		if (snippet)
-			return this.onload(snippet);
+		if (!snippet)
+			return this.onload.error(new Error('Snippet not found: ' + this.id));
 
-		this.onload.error(new Error('Snippet not found: ' + this.id));
+		// Return immediately if snippet is ready.
+		if (snippet.ready)
+			return this.onload(snippet.html);
+
+		// Find all NLS placeholders.
+		var matches = snippet.html.match(/\{nls\{[a-zA-Z0-9\-\/_]+:[a-zA-Z0-9\-_]+\}\}/g);
+
+		// No NLS placeholders, mark ready and return.
+		if (!matches || matches.length == 0) {
+			snippet.ready = true;
+			return this.onload(snippet.html);
+		}
+
+		// Prepare to load NLS bundles.
+		var nlsphs = this.nlsphs = [], names = [];
+		for (var i = 0, match; match = matches[i]; ++i) {
+			var pair = match.substr(5, match.length - 7).split(':');
+			nlsphs.push({
+				match : match,
+				name : pair[0],
+				key : pair[1],
+			});
+			names.push('nls!' + pair[0]);
+		}
+
+		// Load NLS Bundles
+		this.require(names.uniq(), this.onNLSBundlesLoaded.bind(this));
+	},
+
+	onNLSBundlesLoaded : function () {
+		var nlsphs = this.nlsphs, snippet = this.htmls[this.path][this.id],
+			html = snippet.html;
+
+		// Build a lookup map for loaded NLS bundles.
+		var bundles = {};
+		for (var i = 0, bundle; bundle = arguments[i]; ++i)
+			bundles[bundle['@name']] = bundle;
+
+		// Replace all NLS placeholders with NLS strings.
+		for (var i = 0, nlsph; nlsph = nlsphs[i]; ++i)
+			html = html.replace(nlsph.match, bundles[nlsph.name][nlsph.key]);
+
+		// Mark ready and notify loaded.
+		snippet.ready = true;
+		snippet.html = html;
+		this.onload(html);
 	},
 
 });

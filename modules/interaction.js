@@ -33,8 +33,9 @@ var OverlayManager = Class.create({
 
 	initialize : function () {
 		this.panel = window.document.createElement('article');
-		this.panel.id = 'overlay';
+		this.panel.id = 'staple-overlay';
 		this.updater = new PeriodicalTask(100, false, this);
+		this.darkness = 0;
 	},
 
 	resume : function () {
@@ -47,19 +48,28 @@ var OverlayManager = Class.create({
 		window.document.body.removeChild(this.panel);
 	},
 
+	darken : function () {
+		++this.darkness;
+		this.updater.start(true);
+	},
+
+	lighten : function () {
+		--this.darkness;
+		this.updater.start(true);
+	},
+
 	run : function () {
 		var panel = this.panel;
 
-		var dialogs = panel.querySelectorAll("article#overlay>div.dim");
-		for (var i = 0, dialog; dialog = dialogs[i]; ++i)
-			dialog.classList.remove('active');
-		if (dialogs.length)
-			dialogs[dialogs.length - 1].classList.add('active');
-
 		if (panel.childElementCount === 0)
-			panel.classList.remove('active');
+			panel.classList.remove('staple-active');
 		else
-			panel.classList.add('active');
+			panel.classList.add('staple-active');
+
+		if (this.darkness === 0)
+			panel.classList.remove('staple-overlay-dim');
+		else
+			panel.classList.add('staple-overlay-dim');
 	},
 
 	attach : function (overlay) {
@@ -74,10 +84,12 @@ var OverlayManager = Class.create({
 
 	handleBackPressed : function () {
 		var target = this.panel.lastElementChild;
-		if (!target)
-			return false;
-		target.handleBackPressed();
-		return true;
+		while (target) {
+			if (target.handleBackPressed())
+				return true;
+			target = target.previousElementSibling;
+		}
+		return false;
 	},
 
 });
@@ -96,10 +108,15 @@ return Class.create(SuperClass, {
 
 		// Delegate click event.
 		this.$attrs.root.onclick = (function (event) {
-			var handler = this[event.target.getAttribute('on-click')];
-			if (!Object.isFunction(handler))
-				return;
-			handler.call(this, event.target);
+			var target = event.target;
+			while (target) {
+				var handler = this[target.getAttribute('on-click')];
+				if (Object.isFunction(handler)) {
+					handler.call(this, event.target);
+					break;
+				}
+				target = target.parentElement;
+			}
 		}).bind(this);
 	},
 
