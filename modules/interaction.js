@@ -206,6 +206,10 @@ return Class.create(SuperClass, {
 		return this.$attrs.context.extra;
 	},
 
+	getUUID : function () {
+		return this.$attrs.context.uuid;
+	},
+
 	setResult : function (result, data) {
 		var context = this.$attrs.context;
 		context.resultCode = result;
