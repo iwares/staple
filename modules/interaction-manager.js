@@ -186,7 +186,7 @@ var Clazz = Class.create(SuperClass, {
 		var attrs = this.$attrs;
 		if (attrs.busy == busy)
 			return;
-		attrs.interrupter.style.zIndex = busy ? 1000000 : 0;
+		attrs.interrupter.style.zIndex = busy ? 2000000000 : 0;
 		attrs.busy = busy;
 	},
 

@@ -39,31 +39,38 @@ body>article, body>article>section {
 #staple-indicator {
 	-webkit-transition: z-index .6s cubic-bezier(.7,0,.3,1), opacity .6s cubic-bezier(.7,0,.3,1);
 	transition: z-index .6s cubic-bezier(.7,0,.3,1), opacity .6s cubic-bezier(.7,0,.3,1);
-	z-index: -10000;
+	z-index: -2000000000;
 	opacity: -1;
 }
 
 #staple-indicator.staple-active {
-	z-index: 10000;
+	z-index: 2000000000;
 	opacity: 1;
 }
+
+#staple-desktop { z-index: 1000000000; }
 
 #staple-desktop>section {
 	box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.6);
 	background-color: white;
+	z-index: 1200000000;
+}
+
+#staple-desktop>section:first-child {
+	z-index: 1100000000;
 }
 
 #staple-overlay {
 	-webkit-transition: background .2s cubic-bezier(.4,0,.6,0);
 	transition: background .2s cubic-bezier(.4,0,.6,0);
 	background: transparent;
-	z-index: -10;
+	z-index: 0;
 	opacity: 0;
 	pointer-events: none;
 }
 
 #staple-overlay.staple-active {
-	z-index: 10000;
+	z-index: 1800000000;
 	opacity: 1;
 }
 
@@ -164,7 +171,7 @@ body>article, body>article>section {
 
 .staple-toast {
 	pointer-events: auto;
-	z-index: 1000;
+	z-index: 1900000000;
 }
 
 @keyframes staple-it-default {
