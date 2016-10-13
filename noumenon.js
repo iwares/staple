@@ -265,6 +265,8 @@ var HTMLParser = require('staple/html-parser');
 
 var SnippetLoader = Class.create({
 
+	loaders : {},
+
 	htmls : {},
 
 	initialize : function (path, id, require, onload) {
@@ -280,34 +282,58 @@ var SnippetLoader = Class.create({
 		if (snippets)
 			return this.onSnippetsLoaded(snippets);
 
+		// Don't send another request if there is one.
+		var loaders = this.loaders[this.path];
+		if (loaders)
+			return loaders.push(this);
+
 		// Load via AJAX.
+		this.loaders[this.path] = [ this ];
 		var url = this.require.toUrl(this.path + '.html');
 		var config = {
-			onSuccess : this.onHTMLLoaded.bind(this),
-			onFailure : this.onHTMLNotLoaded.bind(this),
+			onSuccess : this.onAjaxRequestSuccess.bind(this),
+			onFailure : this.onAjaxRequestFailure.bind(this),
 			method : 'get',
 		};
 		new Ajax.Request(url, config);
 	},
 
-	onHTMLLoaded : function (xhr) {
-		var html = xhr.responseText, head = window.document.head, snippets = {};
+	onAjaxRequestSuccess : function (xhr) {
+		var loaders = this.loaders[this.path];
+		for (var i = 0, loader; loader = loaders[i]; ++i)
+			loader.onHTMLLoaded(xhr);
+		delete this.loaders[this.path];
+	},
 
-		for (var i = 0, els = HTMLParser.parse(html), el; el = els[i]; ++i) {
-			switch (el.tagName.toLowerCase()) {
-			case 'style':
-				head.appendChild(el);
-				break;
-			case 'script':
-				if (el.type !== 'text/html' || !el.id)
+	onAjaxRequestFailure : function (xhr) {
+		var loaders = this.loaders[this.path];
+		for (var i = 0, loader; loader = loaders[i]; ++i)
+			loader.onHTMLNotLoaded(xhr);
+		delete this.loaders[this.path];
+	},
+
+	onHTMLLoaded : function (xhr) {
+		var html = xhr.responseText, head = window.document.head, snippets = this.htmls[this.path];
+
+		// Snippets my loaded by another loader, just parse it if it is not loaded.
+		if (!snippets) {
+			snippets = {};
+			for (var i = 0, els = HTMLParser.parse(html), el; el = els[i]; ++i) {
+				switch (el.tagName.toLowerCase()) {
+				case 'style':
+					head.appendChild(el);
 					break;
-				snippets[el.id] = {
-					html : el.innerHTML.trim(),
-					ready : false,
-				};
-				break;
-			default:
-				break;
+				case 'script':
+					if (el.type !== 'text/html' || !el.id)
+						break;
+					snippets[el.id] = {
+						html : el.innerHTML.trim(),
+						ready : false,
+					};
+					break;
+				default:
+					break;
+				}
 			}
 		}
 
