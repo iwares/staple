@@ -112,7 +112,7 @@ return Class.create(SuperClass, {
 			while (target) {
 				var handler = this[target.getAttribute('on-click')];
 				if (Object.isFunction(handler)) {
-					handler.call(this, event.target);
+					handler.call(this, target);
 					break;
 				}
 				target = target.parentElement;
