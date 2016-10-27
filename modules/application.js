@@ -237,6 +237,7 @@ return Class.create(SuperClass, {
 				var json = localStorage.getItem(key);
 				if (!json) json = '{}';
 				data = json.evalJSON();
+				return this;
 			},
 			put : function(key, value) {
 				data[key] = value;
