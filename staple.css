@@ -180,19 +180,19 @@ body>article, body>article>section {
 }
 
 @keyframes staple-it-default-enter {
-	from { transform: translate(100%,0); opacity: .5; }
+	from { transform: translate(100%,0); opacity: .8; }
 	to { transform: translate(0,0); opacity: 1; }
 }
 @-webkit-keyframes staple-it-default-enter {
-	from { -webkit-transform: translate(100%,0); opacity: .5; }
+	from { -webkit-transform: translate(100%,0); opacity: .8; }
 	to { -webkit-transform: translate(0,0); opacity: 1; }
 }
 
 @keyframes staple-it-default-leave {
 	from { transform: translate(0,0); opacity: 1; }
-	to { transform: translate(100%,0); opacity: .5; }
+	to { transform: translate(100%,0); opacity: .8; }
 }
 @-webkit-keyframes staple-it-default-leave {
 	from { -webkit-transform: translate(0,0); opacity: 1; }
-	to { -webkit-transform: translate(100%,0); opacity: .5; }
+	to { -webkit-transform: translate(100%,0); opacity: .8; }
 }

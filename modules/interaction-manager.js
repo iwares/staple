@@ -415,7 +415,7 @@ var Clazz = Class.create(SuperClass, {
 			this.setBusy(false);
 		}
 
-		if (anim && (upper || lower)) {
+		if (anim && attrs.previous) {
 			if (upper)
 				upper.$attrs.root.style.cssText += ';'
 					+ attrs.prefix + 'animation:' + uanim + ' .2s ' + ueasing + ';'
