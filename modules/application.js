@@ -199,10 +199,13 @@ return Class.create(SuperClass, {
 
 		var state = this.loadThenDeleteApplicationState();
 
+		if (extra)
+			extra = extra.evalJSON();
+
 		if (interaction) {
 			im.startInteraction(undefined, undefined, interaction, extra);
 		} else if (state && state.interactionManager) {
-			im.restoreState(state.interactionManager)
+			im.restoreState(state.interactionManager);
 		} else if (home) {
 			im.startInteraction(undefined, undefined, home, extra);
 		} else {
