@@ -110,7 +110,7 @@ return Class.create(SuperClass, {
 		this.$attrs.root.onclick = (function (event) {
 			var target = event.target;
 			while (target) {
-				var handler = this[target.getAttribute('on-click')];
+				var handler = this[target.getAttribute('staple:click')];
 				if (Object.isFunction(handler)) {
 					handler.call(this, target);
 					break;

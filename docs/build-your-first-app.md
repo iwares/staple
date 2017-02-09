@@ -292,8 +292,8 @@ First of all, we need another interaction. So, let's create a new interaction wi
 <script type="text/html" id="interaction">
 	<section id="int-input" data-title="Edit">
 		<input id="input" type="text" placeholder="Type something here">
-		<button on-click="onCancelClick">Cancel</button>
-		<button on-click="onOkClick">OK</button>
+		<button staple:click="onCancelClick">Cancel</button>
+		<button staple:click="onOkClick">OK</button>
 	</section>
 </script>
 ```
@@ -327,9 +327,9 @@ return Class.create(Interaction, {
 });
 ```
 
-You may notice the "on-click" attribute of button elements, this will bind buttons' click event to interaction's "onCancelClick()" and "onOkClick()" methods. "on-click" supports all visible HTML elements.
+You may notice the "staple:click" attribute of button elements, this will bind buttons' click event to interaction's "onCancelClick()" and "onOkClick()" methods. "staple:click" supports all visible HTML elements.
 
-你可能注意到了按钮元素的“on-click”属性，这是一个语法糖，用来将按钮的click事件绑定到“交互”对象的“onCancelClick()”和“onOkClick()”方法。“on-click”属性可以在所有可见的HTML元素中使用。
+你可能注意到了按钮元素的“staple:click”属性，这是一个语法糖，用来将按钮的click事件绑定到“交互”对象的“onCancelClick()”和“onOkClick()”方法。“staple:click”属性可以在所有可见的HTML元素中使用。
 
 In the "onCancelClick()" method, interaction's "finish()" is called. This will finish current interaction and navigate back to the previous interaction. If there is no previous interaction, Staple app will stop.
 
@@ -353,7 +353,7 @@ Edit snippets file:
 	<section id="int-home" data-title="Home">
 		<h1>Hello World</h1>
 		<p>This is my first app!</p>
-		<button on-click="onEditClick">Edit</button>
+		<button staple:click="onEditClick">Edit</button>
 	</section>
 ...
 

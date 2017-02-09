@@ -220,7 +220,7 @@ Then, modify snippets files to use native language strings:
 	<section id="int-home" data-title="{nls{res/strings:title_home}}">
 		<h1>{nls{res/strings:text_helloworld}}</h1>
 		<p>{nls{res/strings:text_message}}</p>
-		<button on-click="onEditClick">{nls{res/strings:btn_edit}}</button>
+		<button staple:click="onEditClick">{nls{res/strings:btn_edit}}</button>
 	</section>
 </script>
 ```
@@ -233,8 +233,8 @@ Then, modify snippets files to use native language strings:
 <script type="text/html" id="interaction">
 	<section id="int-input" data-title="{nls{res/strings:title_input}}">
 		<input id="input" type="text" placeholder="{nls{res/strings:input_hint}}">
-		<button on-click="onCancelClick">{nls{res/strings:btn_cancel}}</button>
-		<button on-click="onOkClick">{nls{res/strings:btn_ok}}</button>
+		<button staple:click="onCancelClick">{nls{res/strings:btn_cancel}}</button>
+		<button staple:click="onOkClick">{nls{res/strings:btn_ok}}</button>
 	</section>
 </script>
 ```
