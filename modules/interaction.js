@@ -110,9 +110,9 @@ return Class.create(SuperClass, {
 		this.$attrs.root.onclick = (function (event) {
 			var target = event.target;
 			while (target) {
-				var handler = this[target.getAttribute('on-click')];
+				var handler = this[target.getAttribute('staple:click')];
 				if (Object.isFunction(handler)) {
-					handler.call(this, event.target);
+					handler.call(this, target);
 					break;
 				}
 				target = target.parentElement;
@@ -204,6 +204,10 @@ return Class.create(SuperClass, {
 
 	getExtra : function () {
 		return this.$attrs.context.extra;
+	},
+
+	getUUID : function () {
+		return this.$attrs.context.uuid;
 	},
 
 	setResult : function (result, data) {

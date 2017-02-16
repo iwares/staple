@@ -66,7 +66,7 @@ var browserFeatureCheckers = {
 
 };
 
-var requiredBrowserFeatures = [ 'sessionStorage', 'historyManagement'];
+var requiredBrowserFeatures = [ 'sessionStorage' ];
 
 return Class.create(SuperClass, {
 
@@ -165,9 +165,13 @@ return Class.create(SuperClass, {
 			attrs = this.$attrs, features = this.meta['browser-features'],
 			im = InteractionManager.sharedInstance();
 
+		var historyManagement = window.document.head.meta['history-management'] != 'disable';
+
 		// Check required browser features.
 		features = features ? features.split(',') : [];
 		features.concat(requiredBrowserFeatures);
+		if (historyManagement)
+			features.push('historyManagement');
 		features = this.checkBrowserFeatures(features.uniq());
 
 		if (features && this.onBrowserFeaturesNotSupport(features))
@@ -176,22 +180,32 @@ return Class.create(SuperClass, {
 		attrs.url = location.origin + location.pathname;
 		attrs.back = false;
 
-		if (history.state !== '$1') {
-			history.replaceState('$0', '', attrs.url);
-			history.pushState('$1', '', attrs.url);
+		if (historyManagement) {
+			if (history.state !== '$1') {
+				history.replaceState('$0', '', attrs.url);
+				history.pushState('$1', '', attrs.url);
+			} else {
+				history.back();
+				attrs.back = true;
+			}
 		} else {
-			history.back();
-			attrs.back = true;
+			if (location.hash !== '#$1')
+				location.hash = '$1'
+			else
+				interaction = undefined;
 		}
 
 		this.invokeMethodAndEnsureSuperCalled('onCreate');
 
 		var state = this.loadThenDeleteApplicationState();
 
+		if (extra)
+			extra = extra.evalJSON();
+
 		if (interaction) {
 			im.startInteraction(undefined, undefined, interaction, extra);
 		} else if (state && state.interactionManager) {
-			im.restoreState(state.interactionManager)
+			im.restoreState(state.interactionManager);
 		} else if (home) {
 			im.startInteraction(undefined, undefined, home, extra);
 		} else {
@@ -200,7 +214,12 @@ return Class.create(SuperClass, {
 
 		this.invokeMethodAndEnsureSuperCalled('onResume');
 
-		window.addEventListener('popstate', this.handlePopState.bind(this));
+		if (historyManagement) {
+			window.addEventListener('popstate', this.handlePopState.bind(this));
+		} else {
+			window.addEventListener('hashchange', this.handleHashChange.bind(this));
+		}
+
 		window.addEventListener('unload', this.handleUnload.bind(this));
 	},
 
@@ -215,6 +234,14 @@ return Class.create(SuperClass, {
 		} else {
 			this.handleBackPressed();
 			history.pushState('$1', '', attrs.url);
+		}
+	},
+
+	handleHashChange : function () {
+		var location = window.location;
+		if (location.hash !== '#$1') {
+			this.handleBackPressed();
+			location.hash = '$1';
 		}
 	},
 
@@ -237,6 +264,7 @@ return Class.create(SuperClass, {
 				var json = localStorage.getItem(key);
 				if (!json) json = '{}';
 				data = json.evalJSON();
+				return this;
 			},
 			put : function(key, value) {
 				data[key] = value;

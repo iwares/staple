@@ -12,6 +12,16 @@ return Class.create(Interaction, {
 		this.setContent(require('snippet!res/htmls/home#interaction'));
 	},
 
+	onSaveInstanceState : function ($super, state) {
+		$super(state);
+		state.text = this.selectOne('p').innerText;
+	},
+
+	onRestoreInstanceState : function ($super, state) {
+		$super(state);
+		this.selectOne('p').innerText = state.text;
+	},
+
 	onEditClick : function (button) {
 		var text = this.selectOne('p').innerText;
 		var extra = { text : text }

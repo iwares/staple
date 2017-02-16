@@ -186,7 +186,7 @@ var Clazz = Class.create(SuperClass, {
 		var attrs = this.$attrs;
 		if (attrs.busy == busy)
 			return;
-		attrs.interrupter.style.zIndex = busy ? 1000000 : 0;
+		attrs.interrupter.style.zIndex = busy ? 2000000000 : 0;
 		attrs.busy = busy;
 	},
 
@@ -354,31 +354,36 @@ var Clazz = Class.create(SuperClass, {
 
 		var EASINGI = 'cubic-bezier(.4,1,.6,1)',
 			EASINGO = 'cubic-bezier(.4,0,.6,0)';
-		var top, out, easing;
-		var anim;// = root.dataset.anim ? root.dataset.anim : 'default';
+
+		var upper, lower, outer, ueasing, leasing, uanim, lanim, anim;
 
 		// Reslove animation configuration.
 		switch (attrs.animation) {
 		case 'start':
-			top = interaction;
-			out = attrs.previous;
+			upper = interaction;
+			lower = attrs.previous;
+			outer = lower;
+			anim = 'staple-it-' + (upper.$attrs.root.dataset.anim || 'default');
+			uanim = anim + '-enter';
+			ueasing = EASINGI;
+			lanim = anim + '-push';
+			leasing = EASINGO;
 			attrs.desktop.appendChild(root);
-			easing = EASINGI;
-			anim = 'staple-it-' + (top.$attrs.root.dataset.anim || 'default');
 			break;
 		case 'finish':
-			top = attrs.previous;
-			out = attrs.previous;
-			attrs.desktop.insertBefore(root, top ? top.$attrs.root : undefined);
-			easing = EASINGO;
-			anim = 'staple-it-' + (top.$attrs.root.dataset.anim || 'default') + '-out';
+			upper = attrs.previous;
+			lower = interaction;
+			outer = upper;
+			anim = 'staple-it-' + (upper.$attrs.root.dataset.anim || 'default');
+			uanim = anim + '-leave';
+			ueasing = EASINGO;
+			lanim = anim + '-pop';
+			leasing = EASINGI;
+			attrs.desktop.insertBefore(root, upper ? upper.$attrs.root : undefined);
 			break;
 		default:
-			top = interaction;
-			out = undefined;
+			upper = interaction;
 			attrs.desktop.appendChild(root);
-			easing = undefined;
-			anim = undefined;
 			break;
 		}
 
@@ -396,19 +401,29 @@ var Clazz = Class.create(SuperClass, {
 		results.clear();
 
 		interaction.resume();
-		var cssText = top ? top.$attrs.root.style.cssText : '';
+
+		var upperCss = upper ? upper.$attrs.root.style.context : '';
+		var lowerCss = lower ? lower.$attrs.root.style.context : '';
 
 		function onAnimationComplete () {
-			if (top)
-				top.$attrs.root.style.cssText = cssText;
-			if (out)
-				attrs.desktop.removeChild(out.$attrs.root);
+			if (upper)
+				upper.$attrs.root.style.cssText = upperCss;
+			if (lower)
+				lower.$attrs.root.style.cssText = lowerCss;
+			if (outer)
+				attrs.desktop.removeChild(outer.$attrs.root);
 			this.setBusy(false);
 		}
 
-		if (anim && out) {
-			top.$attrs.root.style.cssText += ';' + attrs.prefix + 'animation:' + anim + ' .2s ' + easing;
-			top.$attrs.root.style.cssText += ';' + attrs.prefix + 'animation-fill-mode: both';
+		if (anim && attrs.previous) {
+			if (upper)
+				upper.$attrs.root.style.cssText += ';'
+					+ attrs.prefix + 'animation:' + uanim + ' .2s ' + ueasing + ';'
+					+ attrs.prefix + 'animation-fill-mode: both' + ';';
+			if (lower)
+				lower.$attrs.root.style.cssText += ';'
+					+ attrs.prefix + 'animation:' + lanim + ' .2s ' + leasing + ';'
+					+ attrs.prefix + 'animation-fill-mode: both' + ';';
 			setTimeout(onAnimationComplete.bind(this), 300);
 		} else {
 			onAnimationComplete.apply(this);

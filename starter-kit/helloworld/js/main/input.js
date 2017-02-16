@@ -15,6 +15,18 @@ return Class.create(Interaction, {
 		input.value = this.getExtra().text;
 	},
 
+	onSaveInstanceState : function ($super, state) {
+		$super(state);
+		var input = this.selectOne("#input");
+		state.input = input.value;
+	},
+
+	onRestoreInstanceState : function ($super, state) {
+		$super(state);
+		var input = this.selectOne("#input");
+		input.value = state.input;
+	},
+
 	onCancelClick : function (el) {
 		this.finish();
 	},
