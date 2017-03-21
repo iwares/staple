@@ -55,7 +55,7 @@ var Clazz = Class.create(SuperClass, {
 
 		// Initialize loading indicator.
 		var attrs = this.$attrs;
-		attrs.indicator = body.firstElementChild;
+		attrs.indicator = body.querySelector('article#staple-indicator');
 		attrs.loading = false;
 
 		var elements = HTMLParser.parse(snippets);
