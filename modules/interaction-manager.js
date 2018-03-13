@@ -406,12 +406,12 @@ var Clazz = Class.create(SuperClass, {
 		var lowerCss = lower ? lower.$attrs.root.style.context : '';
 
 		function onAnimationComplete () {
+			if (outer)
+				attrs.desktop.removeChild(outer.$attrs.root);
 			if (upper)
 				upper.$attrs.root.style.cssText = upperCss;
 			if (lower)
 				lower.$attrs.root.style.cssText = lowerCss;
-			if (outer)
-				attrs.desktop.removeChild(outer.$attrs.root);
 			this.setBusy(false);
 		}
 

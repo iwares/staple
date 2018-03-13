@@ -27,7 +27,7 @@ define('staple/application', function (require, exports, module) {
 var SuperClass = require('staple/object');
 var InteractionManager = require('staple/interaction-manager');
 
-var created = false;
+var sharedInstance = undefined;
 
 var browserFeatureCheckers = {
 
@@ -68,13 +68,13 @@ var browserFeatureCheckers = {
 
 var requiredBrowserFeatures = [ 'sessionStorage' ];
 
-return Class.create(SuperClass, {
+var Application = Class.create(SuperClass, {
 
 	initialize : function ($super) {
 		$super();
-		if (created)
+		if (sharedInstance)
 			throw new Error('Instance of Application already exist.');
-		created = true;
+		sharedInstance = this;
 	},
 
 	onCreate : function () {
@@ -291,5 +291,11 @@ return Class.create(SuperClass, {
 	},
 
 });
+
+Application.sharedInstance = function () {
+	return sharedInstance;
+};
+
+return Application;
 
 });
