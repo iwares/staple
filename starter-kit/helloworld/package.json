@@ -1,0 +1,30 @@
+{
+  "name": "helloworld",
+  "version": "1.0.0",
+  "description": "A helloword project.",
+  "main": "index.js",
+  "scripts": {
+    "develop": "gulp develop",
+    "build": "gulp build"
+  },
+  "author": "xiaodong.cai.ks@gmail.com",
+  "license": "Apache v2",
+  "devDependencies": {
+    "art-template": "^4.12.2",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.2",
+    "babel-plugin-transform-es2015-modules-amd": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.23.7",
+    "gulp": "^3.9.1",
+    "gulp-art-include": "^0.2.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-plumber": "^1.2.0",
+    "gulp-replace": "^0.6.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "requirejs": "^2.3.5"
+  }
+}

@@ -1,0 +1,20 @@
+<!-- file: res/htmls/home.html -->
+<style type="text/css">
+	section#int-home {
+		padding: 16px;
+	}
+	section#int-home h1 {
+		color: rgba(0, 0, 0, .87);
+	}
+	section#int-home p {
+		color: rgba(0, 0, 0, .54);
+	}
+</style>
+
+<script type="text/html" id="interaction">
+	<section id="int-home" data-title="[nls@res/strings:title_home]">
+		<h1>[nls@res/strings:text_helloworld]</h1>
+		<p>[nls@res/strings:text_message]</p>
+		<button staple:click="onEditClick">[nls@res/strings:btn_edit]</button>
+	</section>
+</script>

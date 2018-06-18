@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 iWARES Solution Provider
+ * Copyright (C) 2018 iWARES Solution Provider
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ body>article, body>article>section {
 #staple-overlay.staple-overlay-dim {
 	-webkit-transition: background .2s cubic-bezier(.4,1,.6,1);
 	transition: background .2s cubic-bezier(.4,1,.6,1);
-	background: rgba(0,0,0,.54);
+	background: rgba(0,0,0,.12);
 }
 
 .staple-overlay-mask {
@@ -195,4 +195,22 @@ body>article, body>article>section {
 @-webkit-keyframes staple-it-default-leave {
 	from { -webkit-transform: translate(0,0); opacity: 1; }
 	to { -webkit-transform: translate(100%,0); opacity: .8; }
+}
+
+@keyframes staple-it-default-pop {
+	from { transform: translate(-50%,0); opacity: .8; }
+	to { transform: translate(0,0); opacity: 1; }
+}
+@-webkit-keyframes staple-it-default-pop {
+	from { -webkit-transform: translate(-50%,0); opacity: .8; }
+	to { -webkit-transform: translate(0,0); opacity: 1; }
+}
+
+@keyframes staple-it-default-push {
+	from { transform: translate(0,0); opacity: 1; }
+	to { transform: translate(-50%,0); opacity: .8; }
+}
+@-webkit-keyframes staple-it-default-push {
+	from { -webkit-transform: translate(0,0); opacity: 1; }
+	to { -webkit-transform: translate(-50%,0); opacity: .8; }
 }
