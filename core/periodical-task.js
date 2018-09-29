@@ -26,6 +26,8 @@ define('staple/periodical-task', function (require, exports, module) {
 
 const $attrs = Symbol();
 
+let sequence = 0;
+
 class PeriodicalTask {
 
 	constructor (ms, repeat, runnable) {
@@ -33,6 +35,7 @@ class PeriodicalTask {
 			runnable: runnable,
 			ms: ms,
 			repeat: repeat,
+			id: ++sequence,
 		};
 	}
 
@@ -67,6 +70,10 @@ class PeriodicalTask {
 
 	get running () {
 		return this[$attrs].tid ? true : false;
+	}
+
+	get id () {
+		return this[$attrs].id;
 	}
 
 }

@@ -34,8 +34,9 @@ define('staple/interaction', function (require, exports, module) {
 	class OverlayManager {
 
 		constructor () {
-			this.panel = window.document.createElement('article');
+			this.panel = window.document.createElement('div');
 			this.panel.id = 'staple-overlay';
+			this.panel.classList.add('staple-overlay');
 			this.updater = new PeriodicalTask(100, false, this);
 			this.darkness = 0;
 		}
@@ -267,6 +268,7 @@ define('staple/interaction', function (require, exports, module) {
 			if (!(content instanceof HTMLElement))
 				throw new Error('Content must be an HTML element');
 
+			content.classList.add('staple-interaction');
 			this[$attrs].root = content;
 		}
 
@@ -309,18 +311,28 @@ define('staple/interaction', function (require, exports, module) {
 		scheduleRunnable (runnable, ms, repeat) {
 			let task = new PeriodicalTask(ms, repeat, runnable)
 			task.runnable = runnable;
-			this[$attrs].tasks[task.id()] = task;
+			this[$attrs].tasks[task.id] = task;
 			task.start();
+			return task.id;
 		}
 
 		cancelRunnables (runnable) {
 			let tasks = this[$attrs].tasks;
-			for (let key in tasks) {
-				let task = tasks[key];
-				if (task.runnable !== runnable)
-					continue;
-				task.stop();
-				delete tasks[key];
+
+			if (Number.isInteger(runnable)) {
+				let task = tasks[runnable];
+				if (task) {
+					task.stop();
+					delete tasks[runnable];
+				}
+			} else {
+				for (let key in tasks) {
+					let task = tasks[key];
+					if (task.runnable !== runnable)
+						continue;
+					task.stop();
+					delete tasks[key];
+				}
 			}
 		}
 

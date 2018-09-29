@@ -21,7 +21,7 @@
 	<title>My Staple App</title>
 
 	<!-- import Staple styles -->
-	<link rel="stylesheet" type="text/css" href="libs/staple/dist/staple.css">
+	<link rel="stylesheet" type="text/css" href="libs/staple.js/dist/staple.css">
 
 	<!-- inline styles for loading indicator-->
 	<style type="text/css">
@@ -40,7 +40,7 @@
 
 	<!-- load RequireJS and Staple -->
 	<script type="text/javascript" src="libs/requirejs/require.js"
-		data-main="libs/staple/dist/staple.js"
+		data-main="libs/staple.js/dist/staple.js"
 		data-home="js/main/home">
 	</script>
 
@@ -48,9 +48,9 @@
 
 <body>
 	<!-- loading indicator, required by Staple! -->
-	<article id="staple-indicator" class="staple-active">
+	<div id="staple-indicator" class="staple-indicator staple-active">
 		<div>Loading...</div>
-	</article>
+	</div>
 </body>
 
 </html>

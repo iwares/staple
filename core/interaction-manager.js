@@ -27,8 +27,8 @@ define('staple/interaction-manager', function (require, exports, module) {
 	const UUID = require('staple/uuid').default;
 
 	const snippets = '' +
-		'<article id="staple-interrupter"></article>' +
-		'<article id="staple-desktop"></article>' +
+		'<div id="staple-interrupter" class="staple-interrupter"></div>' +
+		'<div id="staple-desktop" class="staple-desktop"></div>' +
 		'';
 
 	const $attrs = Symbol();
@@ -53,7 +53,7 @@ define('staple/interaction-manager', function (require, exports, module) {
 
 			// Initialize loading indicator.
 			let attrs = this[$attrs];
-			attrs.indicator = body.querySelector('article#staple-indicator');
+			attrs.indicator = body.querySelector('#staple-indicator');
 			attrs.loading = false;
 
 			let elements = HTMLParser.parse(snippets);

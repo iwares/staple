@@ -8,7 +8,7 @@
     "build": "gulp build"
   },
   "author": "xiaodong.cai.ks@gmail.com",
-  "license": "Apache v2",
+  "license": "Apache-2.0",
   "devDependencies": {
     "art-template": "^4.12.2",
     "babel-cli": "^6.26.0",
@@ -25,6 +25,7 @@
     "gulp-replace": "^0.6.1",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
-    "requirejs": "^2.3.5"
+    "requirejs": "^2.3.5",
+    "staple.js": "^1.0.0"
   }
 }

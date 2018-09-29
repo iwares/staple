@@ -130,9 +130,9 @@ const buildlibs = function (dst) {
 	console.log('   asset: node_modules/requirejs');
 	gulp.src('node_modules/requirejs/require.js', {base:'node_modules'})
 		.pipe(gulp.dest(dst + '/libs'));
-	console.log('   asset: staple');
-	gulp.src('../../dist/*', {base:'../..'})
-		.pipe(gulp.dest(dst + '/libs/staple'));
+	console.log('   asset: node_modules/staple.js');
+	gulp.src('node_modules/staple.js/dist/*', {base:'node_modules'})
+		.pipe(gulp.dest(dst + '/libs'));
 }
 
 const build = function (dst) {
