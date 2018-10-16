@@ -1,6 +1,6 @@
 {
   "name": "staple.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Staple is a handset SPA(single page web appliction) framework bases on [Prototype](http://prototypejs.org/) and [RequireJS](http://requirejs.org/). It implements complete page load/navigation logic and many other details, so developers can focus on their business. At the same time, object-oriented programming style makes code clean and maintainable. Staple can work with many other js libraries and frameworks, such as [jQuery](http://jquery.com/) and [bootstrap](http://getbootstrap.com/). Also, Staple is a perfect companion of [Cordova](http://cordova.apache.org/) to create a native-like App.",
   "main": "staple.js",
   "directories": {
@@ -21,6 +21,9 @@
     "develop": "gulp develop",
     "build": "gulp build"
   },
+  "bin": {
+    "staple.js": "./cli/staple.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iwares/staple.git"
@@ -30,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/iwares/staple/issues"
   },
-  "homepage": "https://github.com/iwares/staple#readme"
+  "homepage": "https://github.com/iwares/staple#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.9"
+  }
 }

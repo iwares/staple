@@ -28,17 +28,77 @@ Features:
 
 Install Staple via npm:
 
-通过bower来安装Staple：
+通过npm来安装Staple：
 
 ```bash
-$ npm install staple.js
+$ npm install -g staple.js
 ```
 
 # How to start 如何开始
 
-[Here](starter-kit/helloworld) is a simple helloworld project.
+Create a new folder.
+创建一个新的文件夹
 
-你可以浏览这个简单的[helloworld](starter-kit/helloworld)项目。
+```bash
+$ mkdir /some/path/to/your/project
+$ cd /some/path/to/your/project
+```
+
+Create a new project via "staple.js" CLI.
+
+通过“staple.js”命令行工具来创建一个新项目
+
+```bash
+$ staple.js init
+project name: (project) stapledemo
+version: (1.0.0) 1.0.0
+description: A staple project demo.
+author: Eric.Tsai
+use jquery: (yes) yes
+use art template: (yes) yes
+use weui: (yes) yes
+use typescript: (yes) yes
+
+creating project "temp" ...
+done.
+
+run "npm install" to install dependencies.
+then run "npm start" to start.
+```
+
+There are 4 options: jQuery, artTemplate, WeUI and TypeScript.
+
+创建项目时有4个可选项：jQuery，artTemplate，WeUI和TypeScript.
+
+[jQuery](http://jquery.com/) is the most popular JavaScript framework that makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler.
+[artTemplate](https://github.com/lhywork/artTemplate) is an effective HTML render framework.
+[WeUI](https://github.com/Tencent/weui) is the official UI framework of the WeChat app.
+[TypeScript](http://www.typescriptlang.org) is a typed superset of JavaScript that compiles to plain JavaScript.
+
+[jQuery](http://jquery.com/)是最流行的JavaScript框架，可以使HTML文档遍历和操作，事件处理，动画以及Ajax等工作更简便。
+[artTemplate](https://github.com/lhywork/artTemplate)是一个高效的HTML渲染框架。
+[WeUI](https://github.com/Tencent/weui)是微信官方的UI框架。
+[TypeScript](http://www.typescriptlang.org)是一个强类型的JavaScript超集，可以被编译成JavaScript。
+
+You can disable any of them by setting corresponding option to "no".
+
+你可以把对应的选项设置为“no”来关闭以上的任何一个特性。
+
+Install dependencies:
+
+安装依赖项：
+
+```bash
+$ npm install
+```
+
+Start project:
+
+启动项目
+
+```bash
+$ npm start
+```
 
 # License 许可证
 

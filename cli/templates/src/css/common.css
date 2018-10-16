@@ -1,0 +1,85 @@
+html {
+	-webkit-touch-callout:none;
+	-webkit-user-select:none;
+	-webkit-tap-highlight-color:transparent;
+	user-select:none;
+}
+
+body { font-family: -apple-system-font, "Helvetica Neue", sans-serif; }
+
+## IF weUI ##
+.staple-interaction { background-color: #fbf9fe; }
+
+.staple-overlay.staple-overlay-dim { background: rgba(0,0,0,.12); }
+
+.weui-btn {
+	-webkit-transition: background .2s ease, color .2s ease;
+	transition: background .2s ease, color .2s ease;
+}
+## ELSE ##
+.btn {
+	display: block;
+	text-align: center;
+	vertical-align: middle;
+	border: 1px solid transparent;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 14px;
+	padding-right: 14px;
+	box-sizing: border-box;
+	font-size: 18px;
+	line-height: 2.5;
+	border-radius: 5px;
+	transition: color .2s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.btn-primary {
+	background-color: #1aad19;
+	border: 1px solid #4cb34b;
+	color: #ffffff;
+}
+
+.btn-primary:active {
+	background-color: #179b16;
+	border: 1px solid #158f14;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.btn-default {
+	background-color: #f8f8f8;
+	border: 1px solid #efefef;
+	color: #000000;
+}
+
+.btn-default:active {
+	background-color: #dedede;
+	border: 1px solid #eaeaea;
+	color: rgba(0, 0, 0, 0.6);
+}
+
+.btn + .btn { margin-top: 15px; }
+## FI weUI ##
+
+.staple-toast {
+	-webkit-transform: translate(0,100%);
+	transform: translate(0,100%);
+	right: 0px;
+	left: 0px;
+	bottom: 0px;
+	background: #323232;
+	color: white;
+	padding: 0 12px;
+	font-size: 14px;
+	line-height: 28px;
+	opacity: 1;
+}
+
+.staple-toast p {
+	padding: 14px 12px;
+	margin: 0;
+}
+
+.staple-toast.staple-active {
+	-webkit-transform: none;
+	transform: none;
+}

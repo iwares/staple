@@ -6,10 +6,18 @@ const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 const cleancss = require('gulp-clean-css');
 
-const builder = function () {
-	console.log('building...');
+gulp.task('buildcss', () => {
+	let stream = gulp.src('core/staple.css')
+		.pipe(plumber())
+		.pipe(sourcemaps.init())
+			.pipe(cleancss({compatibility: 'ie8'}))
+		.pipe(sourcemaps.write('.'))
+		.pipe(gulp.dest('dist'));
+	return stream;
+});
 
-	gulp.src(['core/!(noumenon).js', 'core/noumenon.js'], {base: '.'})
+gulp.task('buildjs', () => {
+	let stream = gulp.src(['core/!(noumenon).js', 'core/noumenon.js'], {base: '.'})
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
 			.pipe(concat('staple.js'))
@@ -17,19 +25,19 @@ const builder = function () {
 			.pipe(uglify({mangle: {reserved: ['require']}}))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest('dist'));
+	return stream;
+});
 
-	gulp.src('staple.css')
-		.pipe(plumber())
-		.pipe(sourcemaps.init())
-			.pipe(cleancss({compatibility: 'ie8'}))
-		.pipe(sourcemaps.write('.'))
+gulp.task('buildtsd', () => {
+	let stream = gulp.src('core/staple.d.ts')
 		.pipe(gulp.dest('dist'));
+	return stream;
+})
 
-	console.log('ok!');
-}
-
-gulp.task('build', builder);
+gulp.task('build', ['buildcss', 'buildjs', 'buildtsd']);
 
 gulp.task('develop', ['build'], () => {
-	gulp.watch(['core/*.js', 'staple.css'], builder);
+	gulp.watch('core/*.css', ['buildcss']);
+	gulp.watch('core/*.js', ['buildjs']);
+	gulp.watch('core/*.d.ts', ['buildtsd']);
 });

@@ -244,6 +244,14 @@ define('staple/interaction', function (require, exports, module) {
 			return this[$attrs].overlayManager;
 		}
 
+		getApplication () {
+			return this.application;
+		}
+
+		get application () {
+			return Application.sharedInstance;
+		}
+
 		setResult (result, data) {
 			let context = this[$attrs].context;
 			context.resultCode = result;

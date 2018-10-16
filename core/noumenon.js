@@ -26,7 +26,7 @@
 
 
 // Staple object.
-const staple = {value: '1.0.0'};
+const staple = {value: '1.1.0'};
 
 // Preprocess all query parameters.
 let args = JSON.parse(window.sessionStorage['staple:///args'] || '{}');

@@ -1,0 +1,51 @@
+<style type="text/css">
+
+	.int-about {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+	}
+
+	.int-about .container { margin: 1em; }
+
+	.int-about .name { font-size: 1.5em; }
+
+	.int-about .version { margin: 1em 0 2em; }
+
+	.int-about .footer {
+		color: #808080;
+		font-size: 0.8em;
+		margin-top: 4em;
+	}
+
+	.int-about .footer a { color: #586c94; }
+
+## IF weUI ##
+	.int-about .weui-btn { width: 80%; }
+## ELSE ##
+	.int-about .btn { width: 80%; }
+## FI weUI ##
+
+</style>
+
+
+<script type="text/html" id="interaction">
+
+	<div class="int-about" data-title="[nls@strings:title_about]">
+		<div class="container">
+			<div>
+				<img src="images/application.png">
+			</div>
+			<h1 class="name">[nls@strings:name_application]</h1>
+			<p class="version" id="version"></p>
+## IF weUI ##
+			<a class="weui-btn weui-btn_primary" staple:click="finish">[nls@strings:btn_back]</a>
+## ELSE ##
+			<a class="btn btn-primary" staple:click="finish">[nls@strings:btn_back]</a>
+## FI weUI ##
+			<p class="footer">[nls@strings:text_footer]</p>
+		</div>
+	</div>
+
+</script>

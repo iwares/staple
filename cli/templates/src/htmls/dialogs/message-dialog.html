@@ -1,0 +1,141 @@
+<style type="text/css">
+
+    .message-dialog.staple-dialog {
+    	left: 50%;
+    	top: 45%;
+    	-webkit-transform: translate(-50%, -50%) scale(.7);
+    	transform: translate(-50%, -50%) scale(.7);
+    }
+
+    .message-dialog.staple-dialog.staple-active {
+    	-webkit-transform: translate(-50%, -50%);
+    	transform: translate(-50%, -50%);
+    }
+
+## IF weUI ##
+    .message-dialog .weui-dialog__bd { font-size: 15px; }
+## ELSE ##
+    .message-dialog {
+        line-height: 1.6;
+        z-index: 5000;
+        width: 80%;
+        max-width: 300px;
+        background-color: #FFFFFF;
+        text-align: center;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .message-dialog .title {
+        padding: 1.3em 1.6em 0.5em;
+    }
+
+    .message-dialog .title strong {
+        font-weight: 400;
+        font-size: 18px;
+    }
+
+    .message-dialog .message {
+        padding: 0 1.6em 0.8em;
+        min-height: 40px;
+        font-size: 15px;
+        line-height: 1.3;
+        word-wrap: break-word;
+        word-break: break-all;
+        color: #808080;
+    }
+
+    .message-dialog .message:first-child {
+        padding: 2.7em 20px 1.7em;
+        color: #353535;
+    }
+
+    .message-dialog .buttons {
+        position: relative;
+        line-height: 48px;
+        font-size: 18px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+    }
+
+    .message-dialog .btn {
+        position: relative;
+        display: block;
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+        text-decoration: none;
+        border-radius: 0;
+        border: none;
+        background-color: transparent;
+        margin: 0;
+        padding: 0;
+    }
+
+    .message-dialog .btn:active { background-color: #eeeeee; }
+
+    .message-dialog .btn-primary { color: #09bb07 }
+
+    .message-dialog .btn-default { color: #353535 }
+
+    .message-dialog .buttons:after {
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid #d5d5d6;
+        color: #d5d5d6;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+    }
+
+    .message-dialog .btn:after {
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+        bottom: 0;
+        border-left: 1px solid #D5D5D6;
+        color: #D5D5D6;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: scaleX(0.5);
+        transform: scaleX(0.5);
+    }
+
+    .message-dialog .btn:first-child:after { display: none; }
+## FI weUI ##
+
+</style>
+
+
+
+<script type="text/html" id="dialog">
+
+## IF weUI ##
+    <dialog class="message-dialog weui-dialog">
+    	<div class="weui-dialog__hd" id="title"><strong class="weui-dialog__title"></strong></div>
+    	<div class="weui-dialog__bd" id="message"></div>
+    	<div class="weui-dialog__ft" id="buttons">
+    		<a class="btn weui-dialog__btn weui-dialog__btn_default" id="negative"></a>
+    		<a class="btn weui-dialog__btn weui-dialog__btn_primary" id="positive"></a>
+    	</div>
+    </dialog>
+## ELSE ##
+    <dialog class="message-dialog">
+        <div class="title" id="title"><strong></strong></div>
+        <div class="message" id="message"></div>
+        <div class="buttons" id="buttons">
+            <a class="btn btn-default" id="negative"></a>
+            <a class="btn btn-primary" id="positive"></a>
+        </div>
+    </dialog>
+## FI weUI ##
+
+</script>
