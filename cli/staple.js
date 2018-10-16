@@ -94,7 +94,6 @@ const plains = [
 	'src/js/home.tjs',
 	'src/strings/master.tjs',
 	'src/application.tjs',
-	'.gitignore',
 	'gulpfile.js',
 	'staple.d.ts',
 	'tsconfig.json',
