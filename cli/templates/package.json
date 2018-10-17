@@ -23,7 +23,7 @@
     "gulp-typescript": "^5.0.0-alpha.3",
     "gulp-uglify": "^3.0.0",
     "requirejs": "^2.3.5",
-    "staple.js": "^1.1.0",
+    "staple.js": "^1.1.2",
     "typescript": "^3.0.3"
   }
 }
