@@ -36,7 +36,7 @@ define('staple/snippets', function (require, exports, module) {
 		}
 
 		notifyError (text) {
-			let error = new Error('Faild to load snippet file: ' + this.path + '(' + text + ').');
+			let error = new Error('Failed to load snippet file: ' + this.path + '(' + text + ').');
 			this.onload.error(error);
 		}
 
@@ -46,7 +46,7 @@ define('staple/snippets', function (require, exports, module) {
 			xhr.onreadystatechange = evt => {
 				if (xhr.readyState != 4)
 					return;
-				if (xhr.status != 200)
+				if (xhr.status != 200 || xhr.status != 0) // WKWebView returns 0 for file urls
 					return this.onHTMLNotLoaded(xhr);
 				this.onHTMLLoaded(xhr);
 			};
