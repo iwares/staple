@@ -69,12 +69,9 @@ output('package.json', JSON.stringify(packageJson, null, 2));
 
 const folders = [
 	'src',
-	'src/css',
-	'src/htmls',
-	'src/htmls/dialogs',
+	'src/components',
 	'src/images',
-	'src/js',
-	'src/js/dialogs',
+	'src/pages',
 	'src/strings',
 ];
 
@@ -84,16 +81,16 @@ for (let folder of folders) {
 }
 
 const plains = [
-	'src/css/common.css',
-	'src/htmls/dialogs/message-dialog.html',
-	'src/htmls/about.html',
-	'src/htmls/home.html',
-	'src/index.html',
-	'src/js/dialogs/message-dialog.tjs',
-	'src/js/about.tjs',
-	'src/js/home.tjs',
+	'src/components/message-dialog.html',
+	'src/components/message-dialog.tjs',
+	'src/pages/about.html',
+	'src/pages/about.tjs',
+	'src/pages/home.html',
+	'src/pages/home.tjs',
 	'src/strings/master.tjs',
+	'src/application.css',
 	'src/application.tjs',
+	'src/index.html',
 	'gulpfile.js',
 	'staple.d.ts',
 	'tsconfig.json',

@@ -1,9 +1,9 @@
 /// <reference path="../../staple.d.ts"/>
 
 import { Interaction } from 'staple/interaction'
-import { MessageDialog } from 'js/dialogs/message-dialog';
+import { MessageDialog } from 'components/message-dialog';
 
-import { interaction as snippet_home_interaction } from 'staple/snippets!htmls/home'
+import { interaction as snippet_home_interaction } from 'staple/snippets!./home'
 
 import Strings from 'staple/nls!strings'
 
@@ -23,7 +23,7 @@ export default class HomeInteraction extends Interaction {
 	}
 
 	showAbout (): void {
-		this.startInteraction('js/about');
+		this.startInteraction('pages/about');
 	}
 
 	showQuitDialog (): void {

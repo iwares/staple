@@ -1,11 +1,34 @@
+/// <reference path="../../staple.d.ts"/>
+
 import { Interaction } from 'staple/interaction'
 import { Dialog } from 'staple/dialog'
 
-import { dialog as snippet_message_dialog } from 'staple/snippets!/htmls/dialogs/message-dialog';
+import { dialog as snippet_message_dialog } from 'staple/snippets!./message-dialog';
+
+interface Config {
+    title?: string;
+    message: string;
+    positive?: string;
+    negative?: string;
+}
 
 export class MessageDialog extends Dialog {
 
-    constructor (interaction, config) {
+## IF jQuery ##
+    private title: JQuery<HTMLElement>;
+    private message: JQuery<HTMLElement>;
+    private buttons: JQuery<HTMLElement>;
+    private positive: JQuery<HTMLElement>;
+    private negative: JQuery<HTMLElement>;
+## ELSE ##
+    private title: HTMLElement;
+    private message: HTMLElement;
+    private buttons: HTMLElement;
+    private positive: HTMLElement;
+    private negative: HTMLElement;
+## FI jQuery ##
+
+    constructor (interaction: Interaction, config: Config) {
         super(interaction, snippet_message_dialog);
 ## IF jQuery ##
         this.title = this.find('#title').remove();
@@ -27,27 +50,27 @@ export class MessageDialog extends Dialog {
         this.setConfig(config);
     }
 
-    setConfig (config) {
+    setConfig (config: Config): void {
         this.setTitle(config.title);
         this.setMessage(config.message);
         this.setPositive(config.positive);
         this.setNegative(config.negative);
     }
 
-    setTitle (title) {
+    setTitle (title: string): void {
         if (title) {
 ## IF jQuery ##
             this.title.insertBefore(this.message).find('strong').text(title);
 ## ELSE ##
             this.message.parentElement.insertBefore(this.title, this.message);
-            this.title.firstElementChild.innerText = title;
+            (<HTMLElement> this.title.firstElementChild).innerText = title;
 ## FI jQuery ##
         } else {
             this.title.remove();
         }
     }
 
-    setMessage (message) {
+    setMessage (message: string): void {
 ## IF jQuery ##
         this.message.text(message);
 ## ELSE ##
@@ -55,12 +78,12 @@ export class MessageDialog extends Dialog {
 ## FI jQuery ##
     }
 
-    setPositive (positive) {
+    setPositive (positive: string): void {
 ## IF jQuery ##
-        let previous = this.positive.text();
+        let previous: string = this.positive.text();
         this.positive.text(positive);
 ## ELSE ##
-        let previous = this.positive.innerText;
+        let previous: string = this.positive.innerText;
         this.positive.innerText = positive;
 ## FI jQuery ##
         if (!!previous == !!positive)
@@ -68,12 +91,12 @@ export class MessageDialog extends Dialog {
         this.updateButtons();
     }
 
-    setNegative (negative) {
+    setNegative (negative: string): void {
 ## IF jQuery ##
-        let previous = this.negative.text();
+        let previous: string = this.negative.text();
         this.negative.text(negative);
 ## ELSE ##
-        let previous = this.negative.innerText;
+        let previous: string = this.negative.innerText;
         this.negative.innerText = negative;
 ## FI jQuery ##
         if (!!previous == !!negative)
@@ -81,7 +104,7 @@ export class MessageDialog extends Dialog {
         this.updateButtons();
     }
 
-    updateButtons () {
+    private updateButtons (): void {
         this.negative.remove();
         this.positive.remove();
 ## IF jQuery ##
@@ -97,14 +120,14 @@ export class MessageDialog extends Dialog {
 ## FI jQuery ##
     }
 
-    handleButtonClick (event) {
-        let button = event.currentTarget;
+    private handleButtonClick (event: Event): void {
+        let button: Element = <Element> event.currentTarget;
         if (!this.onButtonClick(this, button.id))
             return;
         this.dismiss();
     }
 
-    onButtonClick (dialog, button) {
+    onButtonClick (dialog: MessageDialog, button: string): boolean {
         console.warn('MessageDialog button clicked!', dialog, button);
         return false;
     }
