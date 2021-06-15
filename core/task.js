@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 iWARES Solution Provider
+ * Copyright (C) 2021 iWARES Solution Provider
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,32 @@
  */
 
 /**
- * @file	core/interaction-manager.js
+ * @file	core/task.js
  * @author	Eric.Tsai
  *
  */
 
-define('staple/interaction-manager', function (require, exports, module) {
+define('staple/task', function (require, exports, module) {
 
 	const HTMLParser = require('staple/html-parser').default;
 	const UUID = require('staple/uuid').default;
 
-	const snippets = '' +
-		'<div id="staple-interrupter" class="staple-interrupter"></div>' +
-		'<div id="staple-desktop" class="staple-desktop"></div>' +
-		'';
+	const snippets = '<div id="staple-desktop" class="staple-desktop"></div>';
 
 	const $attrs = Symbol();
 
-	class InteractionManager {
+	class Task {
 
-		constructor () {
-			if (InteractionManager.sharedInstance)
-				throw new Error('Instance of InteractionManager already exist.');
-			this[$attrs] = {};
+		constructor (manager, name, $peeker) {
+			this[$attrs] = this[$peeker] = {name: name, manager: manager, $peeker: $peeker};
+		}
+
+		get name() {
+			return this[$attrs].name;
+		}
+
+		get interactions() {
+			return this[$attrs].contexts.length;
 		}
 
 		handleBackPressed () {
@@ -49,24 +52,12 @@ define('staple/interaction-manager', function (require, exports, module) {
 		}
 
 		create () {
-			let body = window.document.body;
-
-			// Initialize loading indicator.
 			let attrs = this[$attrs];
-			attrs.indicator = body.querySelector('#staple-indicator');
 			attrs.loading = false;
-
-			let elements = HTMLParser.parse(snippets);
-
-			// Initialize a interrupter used to interrupt user inputs when framework is busy.
-			let interrupter = attrs.interrupter = elements[0];
 			attrs.busy = false;
-			interrupter.style.backgroundColor = 'transparent';
-			body.appendChild(interrupter);
 
 			// Initialize desktop.
-			let desktop = attrs.desktop = elements[1];
-			body.appendChild(desktop);
+			let desktop = attrs.desktop = HTMLParser.parse(snippets)[0];
 
 			// Reslove CSS prefix.
 			let prefix = '', vendors = { Webkit: 'webkit', Moz: '', O: 'o' };
@@ -118,6 +109,8 @@ define('staple/interaction-manager', function (require, exports, module) {
 				return;
 			attrs.paused = true;
 
+			attrs.manager[attrs.$peeker].workspace.removeChild(attrs.desktop);
+
 			if (contexts.length === 0 || !interaction)
 				return;
 
@@ -130,14 +123,14 @@ define('staple/interaction-manager', function (require, exports, module) {
 		}
 
 		saveState () {
-			if (this[$attrs].contexts.length === 0)
-				return undefined;
-			return { contexts : this[$attrs].contexts }
+			let attrs = this[$attrs], name = attrs.name, contexts = attrs.contexts;
+			return {name: name, contexts: contexts}
 		}
 
 		restoreState (state) {
 			let attrs = this[$attrs], contexts = attrs.contexts;
 			contexts.length = 0;
+			attrs.name = state.name;
 			Array.prototype.push.apply(contexts, state.contexts);
 		}
 
@@ -148,11 +141,14 @@ define('staple/interaction-manager', function (require, exports, module) {
 				return;
 			attrs.paused = false;
 
+			attrs.manager[attrs.$peeker].workspace.appendChild(attrs.desktop);
+
 			if (interaction) {
 				interaction.resume();
 				return;
 			}
 
+			this.setBusy(true);
 			this.instantiateActivedInteraction();
 		}
 
@@ -182,23 +178,11 @@ define('staple/interaction-manager', function (require, exports, module) {
 		}
 
 		setBusy (busy) {
-			let attrs = this[$attrs];
-			if (attrs.busy == busy)
-				return;
-			attrs.interrupter.style.zIndex = busy ? 2000000000 : 0;
-			attrs.busy = busy;
+			this[$attrs].manager.setBusy(busy);
 		}
 
 		setLoading (loading) {
-			let attrs = this[$attrs];
-			if (attrs.loading == loading)
-				return;
-			let classes = attrs.indicator.classList;
-			if (loading)
-				classes.add('staple-active');
-			else
-				classes.remove('staple-active');
-			attrs.loading = loading;
+			this[$attrs].manager.setLoading(loading);
 		}
 
 		performStartInteraction (parent, request, target, extra) {
@@ -251,8 +235,10 @@ define('staple/interaction-manager', function (require, exports, module) {
 				instances = attrs.instances;
 
 			let context = contexts.findByUUID(uuid);
-			if (!context)
+			if (!context) {
+				this.setBusy(false);
 				return;
+			}
 
 			let parent = contexts.findByUUID(context.parent);
 			if (parent) {
@@ -268,6 +254,7 @@ define('staple/interaction-manager', function (require, exports, module) {
 
 			if (context !== contexts.top()) {
 				contexts.remove(context);
+				this.setBusy(false);
 				return;
 			}
 
@@ -279,8 +266,9 @@ define('staple/interaction-manager', function (require, exports, module) {
 			contexts.remove(context);
 
 			if (contexts.length == 0) {
-				staple.application.onLastInteractionFinished()
+				attrs.manager.finishTask(this.name);
 				attrs.desktop.innerHTML = '';
+				this.setBusy(false);
 				return;
 			}
 
@@ -294,8 +282,10 @@ define('staple/interaction-manager', function (require, exports, module) {
 				instances = attrs.instances;
 			let context = contexts.top();
 
-			if (!context || this[$attrs].paused)
+			if (!context || this[$attrs].paused) {
+				this.setBusy(false);
 				return;
+			}
 
 			// lookup instance from the instance map.
 			let interaction = instances[context.uuid];
@@ -321,11 +311,12 @@ define('staple/interaction-manager', function (require, exports, module) {
 		doInteractionClassLoaded (context, clazz) {
 			let attrs = this[$attrs], contexts = attrs.contexts;
 
-			if (context != contexts.top())
+			if (context != contexts.top()) {
+				this.setBusy(false);
 				return;
+			}
 
-			let interaction = new clazz.default($attrs, context);
-			interaction[$attrs].context = context;
+			let interaction = new clazz.default(this, $attrs, context);
 
 			interaction.create(context.state);
 			this.doInteractionCreated(interaction);
@@ -336,8 +327,10 @@ define('staple/interaction-manager', function (require, exports, module) {
 				instances = attrs.instances;
 			let context = interaction[$attrs].context;
 
-			if (context != contexts.top())
+			if (context != contexts.top()) {
+				this.setBusy(false);
 				return;
+			}
 
 			instances[context.uuid] = interaction;
 			this.setLoading(false);
@@ -432,10 +425,8 @@ define('staple/interaction-manager', function (require, exports, module) {
 
 	}
 
-	Object.defineProperty(InteractionManager, "sharedInstance", {value: new InteractionManager()});
-
 	Object.defineProperty(exports, '__esModule', {value: true});
-	Object.defineProperty(exports, 'InteractionManager', {value: InteractionManager});
-	Object.defineProperty(exports, 'default', {value: InteractionManager});
+	Object.defineProperty(exports, 'Task', {value: Task});
+	Object.defineProperty(exports, 'default', {value: Task});
 
 });

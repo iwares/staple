@@ -24,7 +24,6 @@
 // Base class of staple interaction.
 define('staple/interaction', function (require, exports, module) {
 
-	const InteractionManager = require('staple/interaction-manager').default;
 	const Application = require('staple/application').default;
 	const HTMLParser = require('staple/html-parser').default;
 	const PeriodicalTask = require('staple/periodical-task').default;
@@ -99,8 +98,8 @@ define('staple/interaction', function (require, exports, module) {
 
 	class Interaction {
 
-		constructor ($peeker, context) {
-			this[$attrs] = this[$peeker] = {context: context};
+		constructor (task, $peeker, context) {
+			this[$attrs] = this[$peeker] = {task: task, context: context};
 			this[$temps] = {};
 		}
 
@@ -212,16 +211,16 @@ define('staple/interaction', function (require, exports, module) {
 		}
 
 		finish () {
-			let im = InteractionManager.sharedInstance;
-			im.finishInteraction(this[$attrs].context.uuid);
+			let task = this[$attrs].task;
+			task.finishInteraction(this[$attrs].context.uuid);
 		}
 
 		startInteraction (name, extra, request) {
-			let im = InteractionManager.sharedInstance, context = this[$attrs].context,
+			let task = this[$attrs].task, context = this[$attrs].context,
 				parent = request ? context.uuid : undefined;
 			if (!request)
 				request = undefined;
-			im.startInteraction(parent, request, name, extra);
+			task.startInteraction(parent, request, name, extra);
 		}
 
 		getExtra () {

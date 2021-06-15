@@ -26,7 +26,7 @@
 
 
 // Staple object.
-const staple = {value: '1.1.5'};
+const staple = {value: '1.2.0'};
 
 // Preprocess all query parameters.
 let args = JSON.parse(window.sessionStorage['staple:///args'] || '{}');
@@ -73,10 +73,11 @@ if (bust == 'timestamp')
 window.sessionStorage['staple:///bust'] = bust || '';
 
 // Compute root path.
-let mainScript = window.document.head.querySelector('script[data-main]');
+let mainScript = window.document.querySelector('script[data-main]');
 let scriptPath = mainScript.dataset.main;
 let base = mainScript.dataset.base;
 let home = mainScript.dataset.home;
+let task = mainScript.dataset.task;
 let stapleRoot = scriptPath.substr(0, scriptPath.lastIndexOf('/') + 1);
 
 requirejs.config({
@@ -104,7 +105,7 @@ require(['application', 'staple/application'], function (subclass, baseclass) {
 	Object.defineProperty(application, 'meta', {value: window.document.head.meta});
 	Object.defineProperty(application, 'args', {value: args});
 
-	return application.start(home, interaction, extra);
+	return application.start(home, interaction, task, extra);
 
 });
 

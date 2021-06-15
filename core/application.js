@@ -24,7 +24,7 @@
 // Base class of staple application.
 define('staple/application', function (require, exports, module) {
 
-	const InteractionManager = require('staple/interaction-manager').default;
+	const TaskManager = require('staple/task-manager').default;
 
 	const browserFeatureCheckers = {
 
@@ -131,8 +131,8 @@ define('staple/application', function (require, exports, module) {
 		}
 
 		onCreate () {
-			let im = InteractionManager.sharedInstance;
-			im.create();
+			let taskManager = TaskManager.sharedInstance;
+			taskManager.create();
 			this.notifySuperCalled('onCreate');
 		}
 
@@ -141,8 +141,8 @@ define('staple/application', function (require, exports, module) {
 		}
 
 		onResume () {
-			let im = InteractionManager.sharedInstance;
-			im.resume();
+			let taskManager = TaskManager.sharedInstance;
+			taskManager.resume();
 			this.notifySuperCalled('onResume');
 		}
 
@@ -151,10 +151,10 @@ define('staple/application', function (require, exports, module) {
 		}
 
 		onPause () {
-			let im = InteractionManager.sharedInstance;
-			im.pause();
+			let taskManager = TaskManager.sharedInstance;
+			taskManager.pause();
 			let state = {};
-			state.interactionManager = im.saveState();
+			state.taskManager = taskManager.saveState();
 			this.saveApplicationState(state);
 			this.notifySuperCalled('onPause');
 		}
@@ -163,7 +163,19 @@ define('staple/application', function (require, exports, module) {
 			window.document.title = title;
 		}
 
-		onLastInteractionFinished () {
+		onTaskStarted (name) {
+			// Default do nothing.
+		}
+
+		onTaskActivated (name, retiree) {
+			// Default do nothing.
+		}
+
+		onTaskFinished (name) {
+			// Default do nothing.
+		}
+
+		onLastTaskFinished () {
 			let history = window.history;
 			if (history.length > 2) {
 				history.go(-2);
@@ -173,8 +185,8 @@ define('staple/application', function (require, exports, module) {
 		}
 
 		onDestroy () {
-			let im = InteractionManager.sharedInstance;
-			im.destroy();
+			let taskManager = TaskManager.sharedInstance;
+			taskManager.destroy();
 			this.notifySuperCalled('onDestroy');
 		}
 
@@ -216,10 +228,10 @@ define('staple/application', function (require, exports, module) {
 			return list;
 		}
 
-		start (home, interaction, extra) {
+		start (home, interaction, task, extra) {
 			let history = window.history, location = window.location,
 				attrs = this[$attrs], features = this.meta['browser-features'],
-				im = InteractionManager.sharedInstance;
+				taskManager = TaskManager.sharedInstance;
 
 			let historyManagement = window.document.head.meta['history-management'] != 'disable';
 
@@ -259,11 +271,11 @@ define('staple/application', function (require, exports, module) {
 				extra = JSON.parse(extra);
 
 			if (interaction) {
-				im.startInteraction(undefined, undefined, interaction, extra);
-			} else if (state && state.interactionManager) {
-				im.restoreState(state.interactionManager);
+				taskManager.startTask('@auto', interaction, extra);
+			} else if (state && state.taskManager) {
+				taskManager.restoreState(state.taskManager);
 			} else if (home) {
-				im.startInteraction(undefined, undefined, home, extra);
+				taskManager.startTask(task || '@auto', home, undefined);
 			} else {
 				throw new Error('Home not specified.');
 			}
@@ -302,8 +314,8 @@ define('staple/application', function (require, exports, module) {
 		}
 
 		handleBackPressed () {
-			let im = InteractionManager.sharedInstance;
-			im.handleBackPressed();
+			let taskManager = TaskManager.sharedInstance;
+			taskManager.handleBackPressed();
 		}
 
 		handleUnload () {

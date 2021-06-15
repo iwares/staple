@@ -1,6 +1,6 @@
 {
   "name": "staple.js",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Staple is a handset SPA(single page web appliction) framework bases on [Prototype](http://prototypejs.org/) and [RequireJS](http://requirejs.org/). It implements complete page load/navigation logic and many other details, so developers can focus on their business. At the same time, object-oriented programming style makes code clean and maintainable. Staple can work with many other js libraries and frameworks, such as [jQuery](http://jquery.com/) and [bootstrap](http://getbootstrap.com/). Also, Staple is a perfect companion of [Cordova](http://cordova.apache.org/) to create a native-like App.",
   "main": "staple.js",
   "directories": {

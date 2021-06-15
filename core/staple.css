@@ -29,7 +29,7 @@ body, html {
 	padding: 0;
 }
 
-.staple-indicator, .staple-indicator, .staple-desktop, .staple-overlay, .staple-interaction {
+.staple-indicator, .staple-interrupter, .staple-workspace, .staple-desktop, .staple-overlay, .staple-interaction {
 	position: absolute;
 	left: 0;
 	top: 0;
